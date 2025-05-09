@@ -38,7 +38,7 @@ export default function Status() {
         return <GuildNotFound />
     } else if (!statusData[0].pocketbase) {
         return (
-            <div className="translate-x-100">
+            <div className="place-self-center">
                 <LoadingSVG />
             </div>
         );
@@ -48,7 +48,7 @@ export default function Status() {
 
         return (
             <>
-                <div className="min-w-screen min-h-dvh ">
+                <div className="min-w-full min-h-full ">
                     <div>
 
                         <div className="text-2xl mt-4 ml-2">

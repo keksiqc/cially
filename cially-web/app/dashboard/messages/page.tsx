@@ -52,14 +52,14 @@ function ClientComponent() {
 				<div className="mt-10 ml-10 text-2xl">Messages Analytics</div>
 				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
 
-				<div className="mt-10 ml-8 grid max-w-80 grid-rows-3 gap-y-4 sm:mr-5 sm:ml-10 sm:max-w-full sm:grid-cols-3 sm:grid-rows-none sm:gap-x-3 sm:gap-y-0">
+				<div className="mt-10 ml-8 grid max-w-80 grid-rows-3 gap-y-4 sm:mr-5 sm:ml-5 sm:max-w-full sm:grid-cols-3 sm:grid-rows-none sm:gap-x-3 sm:gap-y-0">
 				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
 				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
 				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
 					
 				</div>
 
-				<div className="ml-10 mr-5">
+				<div className="ml-5 mr-5">
 				<Skeleton className="mt-50 w-dvh h-[150px] place-self-center rounded-xl" />
 				</div>
 
@@ -81,13 +81,13 @@ function ClientComponent() {
 				<div className="mt-10 ml-10 text-2xl">Messages Analytics</div>
 				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
 
-				<div className="mt-10 ml-8 grid max-w-80 grid-rows-3 gap-y-4 sm:mr-5 sm:ml-10 sm:max-w-full sm:grid-cols-3 sm:grid-rows-none sm:gap-x-3 sm:gap-y-0">
+				<div className="mt-10 grid max-w-80 grid-rows-3 gap-y-4 sm:mr-5 sm:ml-5 sm:max-w-full sm:grid-cols-3 sm:grid-rows-none sm:gap-x-3 sm:gap-y-0">
 					<Last24h chartData={data_24h} />
 					<Last7d chartData={data_7d} />
 					<Last4Weeks chartData={data_4w} />
 				</div>
 
-				<div className="ml-10 mr-5">
+				<div className="sm:ml-5 sm:mr-5">
 					<GeneralMessageDataCard chartData={data_general} />
 				</div>
 

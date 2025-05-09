@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+import { Search } from "lucide-react";
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -75,51 +77,86 @@ function ClientComponent() {
             <div className=" ml-10 text-sm text-white/50">Get details regarding any user in your Discord Server</div>
             <hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
 
-            <div className="place-self-center w-[100%] mt-15">
-                <Card>
-                    <CardHeader>
-                        <div className="grid grid-cols-2">
-                            <div className="place-self-start">
-                                <Avatar className=" w-20 h-20">
-                                    <AvatarImage src="ht" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <div>username</div>
-                            </div>
-                        </div>
-
-                        <hr></hr>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Card Content</p>
-                    </CardContent>
-                    <CardFooter>
-                        <p>Card Footer</p>
-                    </CardFooter>
-                </Card>
-
-            </div>
-
-            <div className="place-self-center mt-10">
+            <div className="mx-5 mt-5">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="inline">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
                         <FormField
                             control={form.control}
                             name="id"
-
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormControl className="inline">
-                                        <Input placeholder="User ID" {...field} />
-                                    </FormControl>
+                                    <div className="relative">
+                                        <FormControl>
+                                            <Input
+                                                placeholder="User ID"
+                                                {...field}
+                                                className="peer pr-24" // space for the button
+                                            />
+                                        </FormControl>
 
+                                        <Button
+                                            type="submit"
+                                            className="absolute top-1/2 right-2 -translate-y-1/2 h-8 px-3 text-sm
+                         opacity-0 translate-x-2 scale-95
+                         transition-all duration-300 ease-in-out
+                         peer-focus:opacity-100 peer-focus:translate-x-0 peer-focus:scale-100 rounded-full bg-transparent hover:bg-white/5"
+                                        >
+                                            <Search className="text-white" />
+                                        </Button>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="inline">Submit</Button>
                     </form>
                 </Form>
+
+
+
+            </div>
+
+            <div className="place-self-center w-full mt-10 ">
+                <Card className="mx-5">
+                    <CardHeader>
+                        <div className="grid grid-cols-2">
+                            <div className="place-self-start">
+                                <div className="grid grid-cols-2 gap-0">
+
+                                    <Avatar className="w-15 h-15">
+                                        <AvatarImage src="https://cdn.discordapp.com/avatars/1095304752495083521/1f2d2d43b7bfe36fa013b301a9687902.webp?size=128" />
+                                        <AvatarFallback></AvatarFallback>
+                                    </Avatar>
+                                    <div className="place-self-center font-bold">skellgreco</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr className="my-3"></hr>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="place-self-start">
+                                <div>Joins: <div className="inline text-gray-300">1</div></div>
+                                <div>Leaves: <div className="inline text-gray-300">3</div></div>
+                                <div>Total Messages: <div className="inline text-gray-300">129</div></div>
+                                <div>Most Active Channel: <div className="inline text-gray-300">#tsavalen-romalem</div></div>
+                            </div>
+                            <div className="place-self-start">
+                                <div>Average Message Length: <div className="inline text-gray-300">6</div></div>
+                                <div>Invites Sent: <div className="inline text-gray-300">10</div></div>
+                                <div>Joins from Invites: <div className="inline text-gray-300">28</div></div>
+                            </div>
+                        </div>
+
+
+                    </CardContent>
+
+                </Card>
+
+            </div >
+
+            <div className="mt-5 pb-5 text-center text-gray-600 text-xs">
+                Thanks for using Cially Dashboard!
             </div>
 
         </>
