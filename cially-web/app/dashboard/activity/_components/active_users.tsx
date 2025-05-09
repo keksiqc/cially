@@ -27,6 +27,9 @@ import {
 	ChartTooltipContent,
 } from "@/components/ui/chart";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
+
 const chartConfig = {
 	desktop: {
 		label: "Desktop",
@@ -35,6 +38,25 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function ActiveUsers({ chartData }) {
+	if (!chartData) {
+		return (
+			<>
+				<Card className="h-full w-full">
+					<CardHeader>
+						<CardTitle>Most Active Users (Messages)</CardTitle>
+						<CardDescription>Last 4 weeks</CardDescription>
+					</CardHeader>
+					<CardContent className="pb-0">
+					<Skeleton className="w-full h-30" />
+
+					</CardContent>
+					<CardFooter className="flex items-center justify-center gap-2 text-sm">
+						<Skeleton className="w-20 h-5 rounded-md" />
+					</CardFooter>
+				</Card>
+			</>
+		)
+	}
 	return (
 		<Card className="h-full w-full flex flex-col ">
 			<CardHeader>

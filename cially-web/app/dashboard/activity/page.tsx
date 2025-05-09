@@ -47,19 +47,30 @@ function ClientComponent() {
     } else if (!chartData.finalData) {
         return (
             <>
-				<div className="mt-10 ml-10 text-2xl">Messages Analytics</div>
-				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
+				<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
+                <hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
 
-				<div className="mt-10 ml-8 grid max-w-80 grid-rows-3 gap-y-4 sm:mr-5 sm:ml-10 sm:max-w-full sm:grid-cols-3 sm:grid-rows-none sm:gap-x-3 sm:gap-y-0">
-				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
-				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
-				<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
-					
-				</div>
+                <div className="h-[90%]">
 
-				<div className="ml-10 mr-5">
-				<Skeleton className="mt-50 w-dvh h-[150px] place-self-center rounded-xl" />
-				</div>
+                    <div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
+                        <div>
+                            <ActiveChannels />
+                        </div>
+                        <div>
+                            <ActiveUsers/>
+                        </div>
+                    </div>
+
+                    <div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
+                        <ActiveHours />
+
+                        <div className="mt-5">
+                            <GeneralActivityData/>
+
+                        </div>
+
+                    </div>
+                </div>
 
 
 				<div className="mt-5 pb-5 text-center text-gray-600 text-xs">

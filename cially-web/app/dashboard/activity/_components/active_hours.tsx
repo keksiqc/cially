@@ -12,6 +12,7 @@ import {
 	YAxis,
 } from "recharts";
 
+
 import {
 	Card,
 	CardContent,
@@ -25,7 +26,11 @@ import {
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
+
 } from "@/components/ui/chart";
+
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 const chartConfig = {
 	desktop: {
@@ -35,6 +40,25 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function ActiveHours({ chartData }) {
+	if (!chartData) {
+		return (
+			<>
+				<Card className="h-full w-full">
+					<CardHeader>
+						<CardTitle>Most Active Hours (UTC)</CardTitle>
+						<CardDescription>Last 4 weeks</CardDescription>
+					</CardHeader>
+					<CardContent className="pb-0">
+					<Skeleton className="w-full h-30" />
+
+					</CardContent>
+					<CardFooter className="flex items-center justify-center gap-2 text-sm">
+						<Skeleton className="w-20 h-5 rounded-md" />
+					</CardFooter>
+				</Card>
+			</>
+		)
+	}
 	return (
 		<Card className="h-full w-full">
 			<CardHeader>

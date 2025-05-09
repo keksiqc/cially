@@ -16,8 +16,26 @@ import {
 } from "@/components/ui/tooltip";
 import BottomCard from "./_main-components/bottom-card";
 import { Activity } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 export default function GeneralActivityData({ chartData }) {
+
+	if (!chartData) {
+		return (
+			<>
+				<Card className="mt-10 grid  auto-rows-auto px-10 sm:min-w-dvh">
+					<div>
+						<div className="text-xl font-semibold"><Activity className="inline mr-2" />General Data</div>
+						<div className="font-sans text-sm mt-1 text-white/60">More insights regarding guild's activity</div>
+					</div>
+					<Skeleton className="w-full h-15" />
+
+
+				</Card>
+			</>
+		)
+	}
 
 	let ArrayChartData = Array(chartData)[0]
 	console.log(ArrayChartData)
