@@ -2,17 +2,6 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
-	Bar,
-	BarChart,
-	LabelList,
-	PolarAngleAxis,
-	PolarGrid,
-	Radar,
-	RadarChart,
-	YAxis,
-} from "recharts";
-
-import {
 	Card,
 	CardContent,
 	CardDescription,
@@ -21,13 +10,12 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	ChartConfig,
+	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
-
 
 const chartConfig = {
 	amount: {
@@ -61,7 +49,7 @@ export default function Last7d({ chartData }) {
 					</CardFooter>
 				</Card>
 			</>
-		)
+		);
 	}
 	let ArrayChartData = Array(chartData)[0];
 

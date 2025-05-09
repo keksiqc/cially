@@ -18,106 +18,99 @@ let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 import { Suspense } from "react";
 
 export default function MessagesDashboard() {
-    return (
-        <Suspense>
-            <ClientComponent />
-        </Suspense>
-    )
+	return (
+		<Suspense>
+			<ClientComponent />
+		</Suspense>
+	);
 }
 
 function ClientComponent() {
-    const searchParams = useSearchParams();
-    const guildID = searchParams.get("guildID");
-    const [chartData, setChartData] = useState([{ amount: 69 }]);
+	const searchParams = useSearchParams();
+	const guildID = searchParams.get("guildID");
+	const [chartData, setChartData] = useState([{ amount: 69 }]);
 
-    useEffect(() => {
-        async function fetchData() {
-            let chartDataReceived = await fetch(
-                `${WEBSITE_URL}/api/server/${guildID}/fetchActivityData`,
-            );
-            let json = await chartDataReceived.json();
-            setChartData(json);
-            console.log(json)
-        }
-        fetchData();
-    }, [guildID]);
+	useEffect(() => {
+		async function fetchData() {
+			let chartDataReceived = await fetch(
+				`${WEBSITE_URL}/api/server/${guildID}/fetchActivityData`,
+			);
+			let json = await chartDataReceived.json();
+			setChartData(json);
+			console.log(json);
+		}
+		fetchData();
+	}, [guildID]);
 
-    if (chartData.notFound) {
-        return <GuildNotFound />
-    } else if (!chartData.finalData) {
-        return (
-            <>
+	if (chartData.notFound) {
+		return <GuildNotFound />;
+	}
+
+	if (!chartData.finalData) {
+		return (
+			<>
 				<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
-                <hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
+				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh" />
 
-                <div className="h-[90%]">
+				<div className="h-[90%]">
+					<div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
+						<div>
+							<ActiveChannels />
+						</div>
+						<div>
+							<ActiveUsers />
+						</div>
+					</div>
 
-                    <div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
-                        <div>
-                            <ActiveChannels />
-                        </div>
-                        <div>
-                            <ActiveUsers/>
-                        </div>
-                    </div>
+					<div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
+						<ActiveHours />
 
-                    <div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
-                        <ActiveHours />
-
-                        <div className="mt-5">
-                            <GeneralActivityData/>
-
-                        </div>
-
-                    </div>
-                </div>
-
+						<div className="mt-5">
+							<GeneralActivityData />
+						</div>
+					</div>
+				</div>
 
 				<div className="mt-5 pb-5 text-center text-gray-600 text-xs">
 					Thanks for using Cially Dashboard!
 				</div>
 			</>
-        );
-    } else {
-        let data_channels = chartData.finalData[0].ChannelData;
-        let data_users = chartData.finalData[0].ActiveUsersData;
-        let data_hours = chartData.finalData[0].ActiveHourData;
-        let data_general = chartData.finalData[0].GeneralData;
-
-        return (
-            <>
-
-                <div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
-                <hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh"></hr>
-
-                <div className="h-[90%]">
-
-                    <div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
-                        <div>
-                            <ActiveChannels chartData={data_channels} />
-                        </div>
-                        <div>
-                            <ActiveUsers chartData={data_users} />
-                        </div>
-                    </div>
-
-                    <div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
-                        <ActiveHours chartData={data_hours} />
-
-                        <div className="mt-5">
-                            <GeneralActivityData chartData={data_general} />
-
-                        </div>
-
-                    </div>
-                </div>
+		)
+	}
 
 
+	const data_channels = chartData.finalData[0].ChannelData;
+	const data_users = chartData.finalData[0].ActiveUsersData;
+	const data_hours = chartData.finalData[0].ActiveHourData;
+	const data_general = chartData.finalData[0].GeneralData;
 
-                <div className="mt-5 pb-5 text-center text-gray-600 text-xs">
-                    Thanks for using Cially Dashboard!
-                </div>
-            </>
-        );
-    }
+	return (
+		<>
+			<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
+			<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh" />
+
+			<div className="h-[90%]">
+				<div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
+					<div>
+						<ActiveChannels chartData={data_channels} />
+					</div>
+					<div>
+						<ActiveUsers chartData={data_users} />
+					</div>
+				</div>
+
+				<div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
+					<ActiveHours chartData={data_hours} />
+
+					<div className="mt-5">
+						<GeneralActivityData chartData={data_general} />
+					</div>
+				</div>
+			</div>
+
+			<div className="mt-5 pb-5 text-center text-gray-600 text-xs">
+				Thanks for using Cially Dashboard!
+			</div>
+		</>
+	)
 }

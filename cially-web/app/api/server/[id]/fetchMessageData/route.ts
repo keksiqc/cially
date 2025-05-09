@@ -5,10 +5,8 @@ import { hourData } from "./_lazy-import/hourdata";
 const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url);
 
-let collection_name = process.env.MESSAGE_COLLECTION;
-let guild_collection_name = process.env.GUILDS_COLLECTION;
-
-
+const collection_name = process.env.MESSAGE_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION;
 
 // Main GET Event
 export async function GET(
@@ -16,10 +14,10 @@ export async function GET(
 	{ params }: { params: Promise<{ id: string }> },
 ) {
 
-	let start_perf = performance.now();
+	const start_perf = performance.now();
 
-	let fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
-	let fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+	const fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
+	const fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
 
 	const { id } = await params;
 
@@ -29,7 +27,7 @@ export async function GET(
 			.getFirstListItem(`discordID='${id}'`, {});
 
 		try {
-			let messagesArray = [];
+			const messagesArray = [];
 
 			const fourWeeksMessagesLog = await pb
 				.collection(collection_name)
@@ -60,9 +58,9 @@ export async function GET(
 				});
 			});
 
-			let todayMessages = [];
-			let todayDate = new Date();
-			let todayDateUTC = new Date(
+			const todayMessages = [];
+			const todayDate = new Date();
+			const todayDateUTC = new Date(
 				Date.UTC(
 					todayDate.getUTCFullYear(),
 					todayDate.getUTCMonth(),
@@ -185,7 +183,7 @@ export async function GET(
 			});
 			fourWeekData = fourWeekData.toReversed();
 
-			let generalDataArray = []
+			const generalDataArray = []
 			generalDataArray.push({
 				total_messages: guild.total_messages,
 				message_deletions: guild.message_deletions,
@@ -210,13 +208,12 @@ export async function GET(
 			return Response.json({ finalData });
 
 		} catch (err) {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
 			return Response.json({ notFound });
-			console.log(err);
 		}
 	} catch (err) {
 		if (err.status === 400) {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
 			return Response.json({ notFound });
 		}
 	}

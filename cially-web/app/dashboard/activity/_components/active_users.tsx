@@ -1,14 +1,8 @@
 "use client";
-import { TrendingDown, TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { XAxis } from "recharts";
 import {
 	Bar,
 	BarChart,
-	LabelList,
-	PolarAngleAxis,
-	PolarGrid,
-	Radar,
-	RadarChart,
 	YAxis,
 } from "recharts";
 
@@ -21,14 +15,13 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	ChartConfig,
+	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
 
 import { Skeleton } from "@/components/ui/skeleton";
-
 
 const chartConfig = {
 	desktop: {
@@ -47,15 +40,14 @@ export default function ActiveUsers({ chartData }) {
 						<CardDescription>Last 4 weeks</CardDescription>
 					</CardHeader>
 					<CardContent className="pb-0">
-					<Skeleton className="w-full h-30" />
-
+						<Skeleton className="w-full h-30" />
 					</CardContent>
 					<CardFooter className="flex items-center justify-center gap-2 text-sm">
 						<Skeleton className="w-20 h-5 rounded-md" />
 					</CardFooter>
 				</Card>
 			</>
-		)
+		);
 	}
 	return (
 		<Card className="h-full w-full flex flex-col ">
