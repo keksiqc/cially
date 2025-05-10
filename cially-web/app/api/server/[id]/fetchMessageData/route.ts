@@ -1,23 +1,23 @@
 import PocketBase from "pocketbase";
-import registerGuild from "../../../_logic/registerGuild";
+import { hourData } from "./_lazy-import/hourdata";
 
 // Pocketbase Initialization
 const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url);
 
-let collection_name = process.env.MESSAGE_COLLECTION;
-let guild_collection_name = process.env.GUILDS_COLLECTION;
+const collection_name = process.env.MESSAGE_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION;
 
 // Main GET Event
 export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
-	let previous_month_date = `${new Date().getUTCFullYear()}-${new Date().getUTCMonth().toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;
-	let sevenDaysAgoDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-	let sevenDaysAgoDate_formatted = `${sevenDaysAgoDate.getUTCFullYear()}-${(sevenDaysAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${sevenDaysAgoDate.getUTCDate().toString().padStart(2, "0")}`;
-	let fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
-	let fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+
+	const start_perf = performance.now();
+
+	const fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
+	const fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
 
 	const { id } = await params;
 
@@ -27,7 +27,7 @@ export async function GET(
 			.getFirstListItem(`discordID='${id}'`, {});
 
 		try {
-			let messagesArray = [];
+			const messagesArray = [];
 
 			const fourWeeksMessagesLog = await pb
 				.collection(collection_name)
@@ -58,9 +58,9 @@ export async function GET(
 				});
 			});
 
-			let todayMessages = [];
-			let todayDate = new Date();
-			let todayDateUTC = new Date(
+			const todayMessages = [];
+			const todayDate = new Date();
+			const todayDateUTC = new Date(
 				Date.UTC(
 					todayDate.getUTCFullYear(),
 					todayDate.getUTCMonth(),
@@ -80,19 +80,6 @@ export async function GET(
 					});
 				}
 			});
-
-			let hourData = [];
-
-			let i = 0;
-			//
-			while (i < 25) {
-				if (i < 10) {
-					hourData.push({ hour: `0${i}`, amount: 0 });
-				} else {
-					hourData.push({ hour: `${i}`, amount: 0 });
-				}
-				i = i + 1;
-			}
 
 			todayMessages.forEach((record) => {
 				let minutes = [record.created_formatted.slice(11, 13)];
@@ -196,19 +183,14 @@ export async function GET(
 			});
 			fourWeekData = fourWeekData.toReversed();
 
-			
-
-			let generalDataArray = []
+			const generalDataArray = []
 			generalDataArray.push({
 				total_messages: guild.total_messages,
 				message_deletions: guild.message_deletions,
 				message_edits: guild.message_edits,
 				total_attachments: guild.total_attachments,
-				
+
 			})
-
-			console.log(generalDataArray)
-
 
 
 			let finalData = [];
@@ -219,15 +201,19 @@ export async function GET(
 				GeneralData: generalDataArray,
 			});
 
+			let end_perf = performance.now();
+
+			console.log((end_perf - start_perf) + ' s')
+
 			return Response.json({ finalData });
+
 		} catch (err) {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
 			return Response.json({ notFound });
-			console.log(err);
 		}
 	} catch (err) {
 		if (err.status === 400) {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
 			return Response.json({ notFound });
 		}
 	}

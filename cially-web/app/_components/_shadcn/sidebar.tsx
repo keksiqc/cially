@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ChartLine, Home, Inbox, Bolt, SatelliteDish, House } from "lucide-react";
+import { Calendar, ChartLine, Home, Inbox, Bolt, SatelliteDish, House, UserSearch } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
 	Sidebar,
@@ -47,6 +47,11 @@ function ClientComponent({ isGuild }) {
 			title: "Activity",
 			url: `/dashboard/activity?guildID=${guildID}`,
 			icon: ChartLine,
+		},
+		{
+			title: "User Search",
+			url: `/dashboard/user?guildID=${guildID}`,
+			icon: UserSearch,
 		},
 	];
 
@@ -123,7 +128,7 @@ function ClientComponent({ isGuild }) {
 			</SidebarContent>
 			<SidebarFooter className="place-items-center">
 
-				<a href="https://github.com/skellgreco/cially"><Badge variant="secondary" className="">Version: 0.2.0</Badge></a>
+				<a href="https://github.com/skellgreco/cially"><Badge variant="secondary" className="">Version: 0.3.0</Badge></a>
 			</SidebarFooter>
 		</Sidebar>
 	);

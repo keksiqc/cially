@@ -27,10 +27,19 @@ async function guildMemberRemove(req, res, client) {
 			.getFirstListItem(`discordID='${guildID}'`, {});
 		debug({ text: `Guild has been found and is ready to add data to it` });
 
+		const uniqueMemberSearch = await pb.collection(collection_name).getList(1, 5, {
+			filter: `memberID >= "${memberID}"`,
+		});
+
+
+		let isUnique = (uniqueMemberSearch.items.length == 0) ? true : false
+
+
 		try {
 			const itemData = {
 				guildID: guild.id,
-				memberID: memberID,
+				memberID: `${memberID}`,
+				unique: isUnique,
 			};
 			const newInvite = await pb.collection(collection_name).create(itemData);
 			debug({ text: `Member Removal has been added in the database.` });
