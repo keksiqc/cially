@@ -14,9 +14,9 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
+let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL
 
 export default async function DataDashboard() {
-const BOT_API_URL = process.env.BOT_API_URL;
 
 	try {
 		let guildData = [{ amount: 69 }];

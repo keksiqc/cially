@@ -39,7 +39,7 @@ export async function GET(
 
     try {
 
-      const bot_response = await fetch(`${process.env.BOT_API_URL}/fetchGuilds`, { signal: controller_bot.signal });
+      const bot_response = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchGuilds`, { signal: controller_bot.signal });
       clearTimeout(timeoutId_bot);
       final_status.push({ bot: "online" })
     } catch (err) {

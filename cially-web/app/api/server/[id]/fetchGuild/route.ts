@@ -15,7 +15,7 @@ export async function GET(
 ) {
 	const { id } = await params;
 	try {
-		let API_REQ = await fetch(`${process.env.BOT_API_URL}/syncGuild/${id}`);
+		let API_REQ = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${id}`);
 		let data = await API_REQ.json();
 		let code = data.code;
 		let date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;

@@ -16,7 +16,7 @@ export default async function registerGuild(guildID) {
 			.collection(guild_collection_name)
 			.create(guildData);
 		console.log("[DEBUG] Guild has been added to the database");
-		fetch(`${process.env.BOT_API_URL}/syncGuild/${guildID}`);
+		fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${guildID}`);
 	} catch (error) {
 		console.log(`\n[DEBUG] Failed to create new guild: \n${error}`);
 	}
