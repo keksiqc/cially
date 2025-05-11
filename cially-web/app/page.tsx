@@ -14,13 +14,14 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
-let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL
 
 export default async function DataDashboard() {
+	// let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL
+
 
 	try {
 		let guildData = [{ amount: 69 }];
-		const data = await fetch(`${BOT_API_URL}/fetchGuilds`);
+		const data = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchGuilds`);
 		const dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
 		guildData = dataJSON;
 
