@@ -21,7 +21,7 @@ export default async function DataDashboard() {
 
 	try {
 		let guildData = [{ amount: 69 }];
-		const data = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchGuilds`);
+		const data = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL as string}/fetchGuilds`);
 		const dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
 		guildData = dataJSON;
 
