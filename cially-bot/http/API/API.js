@@ -12,6 +12,7 @@ const { fetchID } = require("./functions/fetchID");
 const { fetchGuilds } = require("./functions/fetchGuilds");
 const { messageDelete } = require("./functions/messageDelete")
 const { messageEdit } = require("./functions/messageEdit")
+const { fetchUserData } = require("./functions/fetchUserData")
 
 const PocketBase = require("pocketbase/cjs");
 const url = process.env.POCKETBASE_URL;
@@ -59,6 +60,10 @@ async function API(client) {
 
 	app.get("/fetchGuilds", (req, res) => {
 		fetchGuilds(req, res, client);
+	});
+
+	app.get("/fetchUserData/:guildID", (req, res) => {
+		fetchUserData(req, res, client);
 	});
 
 	app.listen(port, () => {
