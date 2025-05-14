@@ -4,10 +4,14 @@ const { error } = require("../../../terminal/error");
 async function fetchUserData(req, res, client) {
 	const success_message = { code: "success" };
 	const error_message = { code: "error" };
-	// const body = req.body;
+	const body = req.body;
 	const guildID = req.params.guildID;
-	const userId = "1095304752495083521";
-	const channeID = "1365959627312857188";
+	// const userId = "1095304752495083521"; // Used for testing
+	const userId = body[0].userID;
+	// const channeID = "1365959627312857188"; // Used for testing
+	const channelID = body[0].channelID
+
+	console.log(guildID, userId, channelID)
 	const dataArray = [];
 
 	debug({
@@ -25,15 +29,16 @@ async function fetchUserData(req, res, client) {
 		});
 
 		try {
-			const discordChannel = await client.channels.fetch(channeID);
+			const discordChannel = await client.channels.fetch(channelID);
 
-			dataArray.push({ channel: { id: channeID, name: discordChannel.name } });
+			dataArray.push({ channel: { id: channelID, name: discordChannel.name } });
 
 			await debug({ text: `User Data fetched. Ready to send response` });
 
 			await res.send(dataArray);
 		} catch (err) {
 			await debug({ text: `Failed to fetch Channel Name` });
+			dataArray.push({ channel: { id: channelID, name: channelID } });
 			await res.send(dataArray);
 		}
 	} catch (err) {

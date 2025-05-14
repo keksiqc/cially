@@ -62,7 +62,7 @@ async function API(client) {
 		fetchGuilds(req, res, client);
 	});
 
-	app.get("/fetchUserData/:guildID", (req, res) => {
+	app.post("/fetchUserData/:guildID", (req, res) => {
 		fetchUserData(req, res, client);
 	});
 

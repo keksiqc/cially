@@ -69,13 +69,35 @@ export async function GET(
 	activeChannels.sort((a, b) => b.amount - a.amount);
 	activeChannels = activeChannels.slice(0, 1);
 
+	let discordDataOUT = [
+		{
+			userID: userID,
+			channelID: activeChannels[0].channel,
+		},
+	];
+
+	const discordDataIN_Req = await fetch(
+		`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchUserData/${id}`,
+		{
+			body: JSON.stringify(discordDataOUT),
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST",
+		},
+	);
+	const discordDataIN = await discordDataIN_Req.json();
+	activeChannels.push({ channel: discordDataIN[1].channel.name, amount: activeChannels[0].amount });
+	activeChannels = activeChannels.slice(1, 2);
+
+
 	dataArray.push({
 		totalJoins: member_joins.length,
 		totalLeaves: member_leaves.length,
 		totalInvites: member_invites.length,
 		totalMessages: member_messages.length,
 		averageMessageLength: avgMessageLength,
-        activeChannel: activeChannels
+		activeChannel: activeChannels,
 	});
 
 	return Response.json({ id, userID, dataArray });
