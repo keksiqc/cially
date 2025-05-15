@@ -18,7 +18,7 @@ import LoadingSVG from "./_components/_events/loading-page";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function DataDashboard() {
-	let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL || "http://cially-bot:3001";
+	let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL;
 
 	try {
 		let guildData = [{ amount: 69 }];
