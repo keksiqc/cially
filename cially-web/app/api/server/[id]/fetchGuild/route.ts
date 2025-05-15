@@ -5,8 +5,8 @@ import PocketBase from "pocketbase";
 const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url);
 
-let guild_collection_name = process.env.GUILDS_COLLECTION;
-let message_collection_name = process.env.MESSAGE_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION;
+const message_collection_name = process.env.MESSAGE_COLLECTION;
 
 // Main GET Event
 export async function GET(
@@ -15,11 +15,13 @@ export async function GET(
 ) {
 	const { id } = await params;
 	try {
-		let API_REQ = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${id}`);
-		let data = await API_REQ.json();
-		let code = data.code;
-		let date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;
-		let previous_date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${(new Date().getUTCDate() - 1).toString().padStart(2, "0")}`;
+		const API_REQ = await fetch(
+			`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${id}`,
+		);
+		const data = await API_REQ.json();
+		const code = data.code;
+		const date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;
+		const previous_date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${(new Date().getUTCDate() - 1).toString().padStart(2, "0")}`;
 
 		if (code === "success") {
 			try {
@@ -41,10 +43,10 @@ export async function GET(
 						sort: "created",
 					});
 
-				let msg_day_difference =
+				const msg_day_difference =
 					today_msg_records.length - yesterday_msg_records.length;
 
-				let guildFound = [
+				const guildFound = [
 					{
 						discordID: guild.discordID,
 						name: guild.name,
@@ -67,17 +69,17 @@ export async function GET(
 				return Response.json({ guildFound });
 			} catch (err) {
 				if (err.status === 400) {
-					let notFound = [{ errorCode: 404 }];
+					const notFound = [{ errorCode: 404 }];
 					return Response.json({ notFound });
 				}
 			}
 		} else {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
 			return Response.json({ notFound });
 		}
 	} catch (err) {
 		console.log(err);
-		let notFound = [{ errorCode: 404 }];
+		const notFound = [{ errorCode: 404 }];
 		return Response.json({ notFound });
 	}
 }

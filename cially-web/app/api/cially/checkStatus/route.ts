@@ -1,60 +1,49 @@
-import { describe } from "node:test";
-import PocketBase from "pocketbase";
-
-// Pocketbase Initialization
-const url = process.env.POCKETBASE_URL;
-const pb = new PocketBase(url);
-
-let guild_collection_name = process.env.GUILDS_COLLECTION;
-let message_collection_name = process.env.MESSAGE_COLLECTION;
-
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
 // Main GET Event
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
+	request: Request,
+	{ params }: { params: Promise<{ id: string }> },
 ) {
+	try {
+		const response = [];
 
-  try {
+		const controllerPocketbase = new AbortController();
+		const controllerDiscordBot = new AbortController();
+		const timeoutIdPocketbase = setTimeout(() => controllerPocketbase.abort(), 5000);
+		const timeoutIdDiscordBot = setTimeout(() => controllerDiscordBot.abort(), 5000);
 
-    let final_status = []
+		try {
+			const pocketbase_response = await fetch(
+				`${process.env.POCKETBASE_URL}/api/health`,
+				{ signal: controllerPocketbase.signal },
+			);
+			clearTimeout(timeoutIdPocketbase);
+			response.push({ pocketbase: "online" });
+		} catch (err) {
+			console.log(err);
 
-    const controller_pb = new AbortController();
-    const controller_bot = new AbortController();
-    const timeoutId_pb = setTimeout(() => controller_pb.abort(), 5000);
-    const timeoutId_bot = setTimeout(() => controller_bot.abort(), 5000);
+			response.push({ pocketbase: "offline" });
+		}
 
-    try {
+		try {
+			const bot_response = await fetch(
+				`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchGuilds`,
+				{ signal: controllerDiscordBot.signal },
+			);
+			clearTimeout(timeoutIdDiscordBot);
+			response.push({ bot: "online" });
+		} catch (err) {
+			console.log(err);
+			response.push({ bot: "offline" });
+		}
 
-      const pocketbase_response = await fetch(`${process.env.POCKETBASE_URL}/api/health`, { signal: controller_pb.signal });
-      clearTimeout(timeoutId_pb);
-      final_status.push({ pocketbase: "online" })
-    } catch (err) {
-      console.log(err)
+		return Response.json(response);
+	} catch (error) {
+		const response = [];
+		response.push({ pocketbase: "offline" });
+		response.push({ bot: "offline" });
 
-      final_status.push({ pocketbase: "offline" })
-
-    }
-
-    try {
-
-      const bot_response = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/fetchGuilds`, { signal: controller_bot.signal });
-      clearTimeout(timeoutId_bot);
-      final_status.push({ bot: "online" })
-    } catch (err) {
-      console.log(err)
-      final_status.push({ bot: "offline" })
-
-    }
-
-    return Response.json(final_status);
-  } catch (error) {
-    final_status.push({ pocketbase: "offline" })
-    final_status.push({ bot: "offline" })
-
-    return Response.json(final_status);
-  }
-
-
+		return Response.json(response);
+	}
 }

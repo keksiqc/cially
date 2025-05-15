@@ -1,15 +1,14 @@
-import { describe } from "node:test";
 import PocketBase from "pocketbase";
 
 // Pocketbase Initialization
 const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url);
 
-let guild_collection_name = process.env.GUILDS_COLLECTION;
-let message_collection_name = process.env.MESSAGE_COLLECTION;
-let MEMBER_JOINS_COLLECTION = process.env.MEMBER_JOINS_COLLECTION;
-let MEMBER_LEAVES_COLLECTION = process.env.MEMBER_LEAVES_COLLECTION;
-let INVITE_COLLECTION = process.env.INVITE_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION;
+const message_collection_name = process.env.MESSAGE_COLLECTION;
+const MEMBER_JOINS_COLLECTION = process.env.MEMBER_JOINS_COLLECTION;
+const MEMBER_LEAVES_COLLECTION = process.env.MEMBER_LEAVES_COLLECTION;
+const INVITE_COLLECTION = process.env.INVITE_COLLECTION;
 
 // Main GET Event
 export async function GET(
@@ -49,27 +48,30 @@ export async function GET(
 	const dataArray = [];
 	let avgMessageLength = 0;
 
-	member_messages.forEach((item) => {
+	for (const item of member_messages) {
 		avgMessageLength = avgMessageLength + item.messageLength;
-	});
+	}
 
 	avgMessageLength = Math.round(avgMessageLength / member_messages.length);
 
 	let activeChannels = [];
 
-	member_messages.forEach((message) => {
-		let channel = message.channelID;
-		let position = activeChannels.findIndex((item) => item.channel === channel);
+	for (const message of member_messages) {
+		const channel = message.channelID;
+		const position = activeChannels.findIndex(
+			(item) => item.channel === channel,
+		);
 		if (position !== -1) {
 			activeChannels[position].amount = activeChannels[position].amount + 1;
 		} else {
 			activeChannels.push({ channel: channel, amount: 1 });
 		}
-	});
+	}
+
 	activeChannels.sort((a, b) => b.amount - a.amount);
 	activeChannels = activeChannels.slice(0, 1);
 
-	let discordDataOUT = [
+	const discordDataOUT = [
 		{
 			userID: userID,
 			channelID: activeChannels[0].channel,
@@ -87,9 +89,11 @@ export async function GET(
 		},
 	);
 	const discordDataIN = await discordDataIN_Req.json();
-	activeChannels.push({ channel: discordDataIN[1].channel.name, amount: activeChannels[0].amount });
+	activeChannels.push({
+		channel: discordDataIN[1].channel.name,
+		amount: activeChannels[0].amount,
+	});
 	activeChannels = activeChannels.slice(1, 2);
-
 
 	dataArray.push({
 		totalJoins: member_joins.length,
