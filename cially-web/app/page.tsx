@@ -16,12 +16,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function DataDashboard() {
-	// let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL
+	let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL || "http://cially-bot:3001"
 
 
 	try {
 		let guildData = [{ amount: 69 }];
-		const data = await fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL as string}/fetchGuilds`);
+		const data = await fetch(`${BOT_API_URL}/fetchGuilds`);
 		const dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
 		guildData = dataJSON;
 
