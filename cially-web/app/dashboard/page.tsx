@@ -2,7 +2,7 @@ import BottomCard from "./_main-components/bottom-card";
 import MemberBlock from "./_main-components/member-card";
 import MessagesBlock from "./_main-components/messages-card";
 
-let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 export default async function Dashboard({
 	searchParams,

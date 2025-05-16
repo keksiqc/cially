@@ -52,31 +52,31 @@ export default function Last4Weeks({ chartData }) {
 		);
 	}
 
-	let ArrayChartData = Array(chartData)[0];
+	const ArrayChartData = Array(chartData)[0];
 
-	let startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
-	let startingDate_factor = startingDate.toLocaleDateString("en-US", {
+	const startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
+	const startingDate_factor = startingDate.toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",
 	});
 
-	let previousDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-	let previousDate_factor = previousDate.toLocaleDateString("en-US", {
+	const previousDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+	const previousDate_factor = previousDate.toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",
 	});
 
-	let currentAmount_index = ArrayChartData.findIndex(
+	const currentAmount_index = ArrayChartData.findIndex(
 		(item) => item.factor === startingDate_factor,
 	);
-	let currentAmount = ArrayChartData[currentAmount_index].amount;
+	const currentAmount = ArrayChartData[currentAmount_index].amount;
 
-	let previousAmount_index = ArrayChartData.findIndex(
+	const previousAmount_index = ArrayChartData.findIndex(
 		(item) => item.factor === previousDate_factor,
 	);
-	let previousAmount = ArrayChartData[previousAmount_index].amount;
+	const previousAmount = ArrayChartData[previousAmount_index].amount;
 
-	let difference = currentAmount - previousAmount;
+	const difference = currentAmount - previousAmount;
 
 	return (
 		<Card>

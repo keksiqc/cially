@@ -7,12 +7,9 @@ import Last4Weeks from "./_components/_message-charts/last_4weeks";
 import Last7d from "./_components/_message-charts/last_7d";
 import Last24h from "./_components/_message-charts/last_24hrs";
 import GeneralMessageDataCard from "./_components/_message-charts/general_data";
+import { Suspense } from "react";
 
 const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
-
-// FIXME Error when there are no messages
-
-import { Suspense } from "react";
 
 export default function MessagesActivityPage() {
 	return (
@@ -29,10 +26,10 @@ function ClientComponent() {
 
 	useEffect(() => {
 		async function fetchData() {
-			let chartDataReceived = await fetch(
+			const chartDataReceived = await fetch(
 				`${WEBSITE_URL}/api/server/${guildID}/fetchMessageData`,
 			);
-			let json = await chartDataReceived.json();
+			const json = await chartDataReceived.json();
 			setChartData(json);
 		}
 		fetchData();

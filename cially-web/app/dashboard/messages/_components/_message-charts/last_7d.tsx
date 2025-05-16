@@ -51,25 +51,25 @@ export default function Last7d({ chartData }) {
 			</>
 		);
 	}
-	let ArrayChartData = Array(chartData)[0];
+	const ArrayChartData = Array(chartData)[0];
 
-	let startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
-	let startingDate_formatted = `${(startingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${startingDate.getUTCDate().toString().padStart(2, "0")}`;
+	const startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
+	const startingDate_formatted = `${(startingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${startingDate.getUTCDate().toString().padStart(2, "0")}`;
 
-	let previousDate = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000);
-	let previousDate_formatted = `${(previousDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${previousDate.getUTCDate().toString().padStart(2, "0")}`;
+	const previousDate = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000);
+	const previousDate_formatted = `${(previousDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${previousDate.getUTCDate().toString().padStart(2, "0")}`;
 
-	let currentAmount_index = ArrayChartData.findIndex(
+	const currentAmount_index = ArrayChartData.findIndex(
 		(item) => item.date === startingDate_formatted,
 	);
-	let currentAmount = ArrayChartData[currentAmount_index].amount;
+	const currentAmount = ArrayChartData[currentAmount_index].amount;
 
-	let previousAmount_index = ArrayChartData.findIndex(
+	const previousAmount_index = ArrayChartData.findIndex(
 		(item) => item.date === previousDate_formatted,
 	);
-	let previousAmount = ArrayChartData[previousAmount_index].amount;
+	const previousAmount = ArrayChartData[previousAmount_index].amount;
 
-	let difference = currentAmount - previousAmount;
+	const difference = currentAmount - previousAmount;
 
 	return (
 		<Card>

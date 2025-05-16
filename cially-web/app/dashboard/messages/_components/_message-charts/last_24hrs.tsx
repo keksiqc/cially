@@ -44,28 +44,26 @@ export default function Last24h({ chartData }) {
 			</>
 		);
 	}
-	let ArrayChartData = Array(chartData)[0];
+	const ArrayChartData = Array(chartData)[0];
 	console.log(ArrayChartData);
 
-	let startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
-	let startingDate_formatted = `${startingDate.getUTCHours().toString().padStart(2, "0")}`;
-	console.log(startingDate_formatted);
+	const startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
+	const startingDate_formatted = `${startingDate.getUTCHours().toString().padStart(2, "0")}`;
 
-	let previousDate = new Date(Date.now() - 1 * 60 * 60 * 1000);
-	let previousDate_formatted = `${previousDate.getUTCHours().toString().padStart(2, "0")}`;
-	console.log(previousDate_formatted);
+	const previousDate = new Date(Date.now() - 1 * 60 * 60 * 1000);
+	const previousDate_formatted = `${previousDate.getUTCHours().toString().padStart(2, "0")}`;
 
-	let currentAmount_index = ArrayChartData.findIndex(
+	const currentAmount_index = ArrayChartData.findIndex(
 		(item) => item.hour === startingDate_formatted,
 	);
-	let currentAmount = ArrayChartData[currentAmount_index].amount;
+	const currentAmount = ArrayChartData[currentAmount_index].amount;
 
-	let previousAmount_index = ArrayChartData.findIndex(
+	const previousAmount_index = ArrayChartData.findIndex(
 		(item) => item.hour === previousDate_formatted,
 	);
-	let previousAmount = ArrayChartData[previousAmount_index].amount;
+	const previousAmount = ArrayChartData[previousAmount_index].amount;
 
-	let difference = currentAmount - previousAmount;
+	const difference = currentAmount - previousAmount;
 
 	const chartConfig = {
 		hour: {

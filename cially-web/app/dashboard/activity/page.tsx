@@ -3,15 +3,12 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import GuildNotFound from "@/app/_components/_events/guildNotFound";
-import LoadingSVG from "@/app/_components/_events/loading-page";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import ActiveChannels from "../activity/_components/active_channels";
 import ActiveHours from "../activity/_components/active_hours";
 import ActiveUsers from "../activity/_components/active_users";
 import GeneralActivityData from "./_components/general_data";
-import { Skeleton } from "@/components/ui/skeleton";
 
-let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 // FIXME Error when there are no messages
 
@@ -32,10 +29,10 @@ function ClientComponent() {
 
 	useEffect(() => {
 		async function fetchData() {
-			let chartDataReceived = await fetch(
+			const chartDataReceived = await fetch(
 				`${WEBSITE_URL}/api/server/${guildID}/fetchActivityData`,
 			);
-			let json = await chartDataReceived.json();
+			const json = await chartDataReceived.json();
 			setChartData(json);
 			console.log(json);
 		}

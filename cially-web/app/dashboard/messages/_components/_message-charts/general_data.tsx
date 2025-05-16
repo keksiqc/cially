@@ -24,7 +24,7 @@ export default function GeneralMessageDataCard({ chartData }) {
 		);
 	}
 
-	let ArrayChartData = Array(chartData)[0];
+	const ArrayChartData = Array(chartData)[0];
 	console.log(ArrayChartData);
 
 	return (
