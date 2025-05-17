@@ -1,3 +1,5 @@
+"use client"
+
 import {
 	Card,
 	CardContent,
@@ -17,16 +19,40 @@ import GuildNotFound from "./_components/_events/guildNotFound";
 import LoadingSVG from "./_components/_events/loading-page";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function DataDashboard() {
+import { Suspense, useEffect, useState } from "react";
+
+export default function MessagesDashboard() {
+	return (
+		<Suspense>
+			<ClientComponent />
+		</Suspense>
+	)
+}
+
+let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+
+function ClientComponent() {
 	// let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL;
-	let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 	try {
-		let guildData = [{ amount: 69 }];
-		let data = await fetch(`${WEBSITE_URL}/api/fetchGuilds`);
-		let dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
-		// console.log(dataJSON.data)
-		guildData = dataJSON.data;
+		const [guildData, setGuildData] = useState([{ amount: 69 }]);
+		
+			useEffect(() => {
+				async function fetchData() {
+					let DataReceived = await fetch(
+						`${WEBSITE_URL}/api/fetchGuilds`,
+					);
+					let json = await DataReceived.json();
+					setGuildData(json.data);
+					console.log(json)
+				}
+				fetchData();
+			}, []);
+		// let guildData = [{ amount: 69 }];
+		// let data = await fetch(`${WEBSITE_URL}/api/fetchGuilds`);
+		// let dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
+		console.log(guildData)
+		// guildData = dataJSON.data;
 
 		if (!guildData.AvailableGuilds) {
 			return (
