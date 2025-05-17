@@ -18,13 +18,15 @@ import LoadingSVG from "./_components/_events/loading-page";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function DataDashboard() {
-	let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL;
+	// let BOT_API_URL = process.env.NEXT_PUBLIC_BOT_API_URL;
+	let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 	try {
 		let guildData = [{ amount: 69 }];
-		let data = await fetch(`${BOT_API_URL}/fetchGuilds`);
+		let data = await fetch(`${WEBSITE_URL}/api/fetchGuilds`);
 		let dataJSON = data ? await data.json() : [{ error: "cant communicate" }];
-		guildData = dataJSON;
+		// console.log(dataJSON.data)
+		guildData = dataJSON.data;
 
 		if (!guildData.AvailableGuilds) {
 			return (
