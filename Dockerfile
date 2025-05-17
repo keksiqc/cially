@@ -21,6 +21,12 @@ RUN pnpm deploy --filter=cially-bot --prod /prod/cially-bot
 # ---- Build cially-web ----
 FROM deps AS build-web
 WORKDIR /app
+# Add build arguments for environment variables that need to be available at build time
+ARG NEXT_PUBLIC_WEBSITE_URL=http://localhost:3000
+ARG NEXT_PUBLIC_BOT_API_URL=http://cially-bot:3001
+# Set them as environment variables so Next.js can access them during build
+ENV NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
+ENV NEXT_PUBLIC_BOT_API_URL=$NEXT_PUBLIC_BOT_API_URL
 COPY . .
 RUN pnpm run --filter=cially-web build
 
