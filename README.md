@@ -26,17 +26,22 @@ Cially is an open source dashboard that allows you to view detailed insights reg
   - [x] Most Active Users
   - [x] Most Active Hours
   - [x] Total Online/Idle/Offline Members
+- [x] User Search Page
+  - [x] Shows how many times the user has left/joined the server
+  - [x] Shows average message length
+  - [x] Shows the number of total invites created
+  - [x] Shows the total amount of messages ever sent by them
+  - [x] Shows the channel they are most active on
+  - [x] Shows when their account was created
 - [x] Beautiful User Friendly UI
 - [x] Responsive for every device
 - [ ] More Features to come in the future...
 
 ## 🐟 Screenshots
 ![image](https://github.com/user-attachments/assets/aaa15308-971c-4e19-9808-25a000272a30)
-![image](https://github.com/user-attachments/assets/ed313c80-2c89-48ac-9e3d-75c3e818d94f)
-![image](https://github.com/user-attachments/assets/8ae543af-094f-4f1a-9313-3f3cd95609a7)
-![image](https://github.com/user-attachments/assets/8bf8ccf8-9e7a-4e04-987a-89d8eb39a0ea)
-![image](https://github.com/user-attachments/assets/ab4e8216-6e18-488f-b592-fbef82d8eb3a)
-
+![image](https://github.com/user-attachments/assets/9c9d3b57-63bc-4491-9913-47e6fc37e3a5)
+![image](https://github.com/user-attachments/assets/f4cc2b4d-6378-4a85-8ddb-043d5c3ea792)
+![image](https://github.com/user-attachments/assets/e80c31b4-3ca2-4e96-9953-326cedcd061b)
 
 ## 🐠 How it works
 Cially Dashboard is powered by a Discord Bot, a full-stack Next.js application, and Pocketbase as the backend. The Discord Bot actively listens to all events happening on your server and logs them to the database via its own API.
@@ -44,18 +49,7 @@ The web application then retrieves this data from the database to display detail
 All ongoing synchronization and data enrichment—such as resolving names or syncing recent activity—is handled seamlessly between the bot and the website.
 
 ## 🪸 How to run
-### There is a Docker Image inlcuded in the Source Code! However, please take a look at the Manual Installation Instructions bellow for futher information regarding setting Cially up!
-### Pocketbase Instance
-1. Install [Pocketbase 0.26.0](https://github.com/pocketbase/pocketbase/releases/tag/v0.26.6)
-2. Run `./pocketbase serve` to start the backend
-3. Open the URL displayed on your terminal and create an admin account
-4. Go to Settings -> Import -> Load from JSON file
-5. Upload the pb_schema json file that can be found in the /pocketbase directory
-6. Review Changes and then apply them
-> [!WARNING]  
-> Do not change anything in the database if you don't know what you are doing! Changing a small detail might break the dashboard
-
-### Discord Bot
+### Initial Setup
 1. Go to [Discord Developer Portal](https://discord.com/developers/applications) and create a new Application
 2. Go to `Bot` Section and enable all the of `Privileged Gateway Intents` as shown in the picture bellow
 ![image](https://github.com/user-attachments/assets/6b22ba34-cac4-4483-a9bb-2921224616cc)
@@ -63,16 +57,41 @@ All ongoing synchronization and data enrichment—such as resolving names or syn
 4. Give it permissions to `View Channel` & `View Message History` on every channel you want the bot to track
 > [!TIP]
 > **OPTIONAL** Give the bot `Manage Server` permission if you want it to track Vanity URL Uses
-5. Clone the `/cially-bot` directory where you want the Bot Code to run on.
-6. Rename `.env.example` file to `.env` and replace each value. There are instructions for each variable so you will know what to change
+5. Once you got PocketBase up and running, go to Settings -> Import -> Load from JSON file
+![image](https://github.com/user-attachments/assets/0e499018-39b7-4057-9eac-70b92deb83d8)
+6. Upload the pb_schema json file that can be found in the `/pocketbase` directory
+7. Review Changes and then apply them
+> [!WARNING]  
+> Do not change anything in the database if you don't know what you are doing! Changing a small detail might break the dashboard
 
-### Website
+### Docker Setup
+1. Clone the repository
+2. Open the directory where the source code was cloned and locate the `docker-compose.yaml` file
+3. On `cially-web` service find the line `NEXT_PUBLIC_WEBSITE_URL=http://localhost:3000` and replace with the actual URL where your dashboard is going to run on. **Do not include `/` in the end** Example URLs would be `http://192.12xx.xxx:3000` or `http://cially-test-domain.com`
+4. Go back to your CLI and run `cd cially` (or whatever the directory that contains the source code is)
+5. Run `docker compose up --build`
+6. Make sure to follow the initial setup instructions regarding Pocketbase/Discord Bot Setup
+7. And success! The dashboard should be up and running! Make sure to let the bot store some data first before taking a look at your servers!
+
+### Manual Setup
+#### Pocketbase Instance
+1. Install [Pocketbase 0.26.0](https://github.com/pocketbase/pocketbase/releases/tag/v0.26.6)
+2. Run `./pocketbase serve` to start the backend
+3. Open the URL displayed on your terminal and create an admin account
+4. Then follow the *Initial Setup* instructions that can be found above
+
+#### Discord Bot
+1. Clone the `/cially-bot` directory where you want the Bot Code to run on.
+2. Rename `.env.example` file to `.env` and replace each value. There are instructions for each variable so you will know what to change
+4. Make sure to follow the *Initial Setup* instructions that can be found above
+
+#### Website
 1. Clone the `./cially-webserver` directory where you want the Website Code to run on
 2. Rename `.env.example` file to `.env` and replace each value. There are instructions for each variable so you will know what to change
-3. Run `npm run build` to build the website.
+3. Run `npm run build` to build the website. 
 
 > [!TIP]
-> If you are a beginner, you can use tools Coolify to simplify the hosting process. Check [Coolify's Docs](https://www.coolify.io/) for more info!
+> If you are using a VPS (or any other kind of machine to run all the services 24/7) you should use Docker for easier setup. Manual installation is not really suggested for beginners.
 
 And that's it! Once a new message is being detected by the bot for the first time, everything should start to work automatically! All you need to do is go to your Dashboard Page, paste your Server ID and all the data will be displayed!
 
