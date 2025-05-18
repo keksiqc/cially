@@ -2,17 +2,6 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
-	Bar,
-	BarChart,
-	LabelList,
-	PolarAngleAxis,
-	PolarGrid,
-	Radar,
-	RadarChart,
-	YAxis,
-} from "recharts";
-
-import {
 	Card,
 	CardContent,
 	CardDescription,
@@ -21,11 +10,12 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import {
-	ChartConfig,
+	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Last4Weeks({ chartData }) {
 	const chartConfig = {
@@ -35,31 +25,58 @@ export default function Last4Weeks({ chartData }) {
 		},
 	} satisfies ChartConfig;
 
-	let ArrayChartData = Array(chartData)[0];
+	if (!chartData) {
+		return (
+			<>
+				<Card>
+					<CardHeader>
+						<CardTitle>Last 4 weeks days</CardTitle>
+						<CardDescription>
+							Showing total messages for the last 4 weeks
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
+					</CardContent>
+					<CardFooter>
+						<div className="flex w-full items-start gap-2 text-sm">
+							<div className="grid gap-2">
+								<div className="flex items-center gap-2 font-medium leading-none">
+									<Skeleton className="w-20 h-[10px] place-self-center rounded-xl" />
+								</div>
+							</div>
+						</div>
+					</CardFooter>
+				</Card>
+			</>
+		);
+	}
 
-	let startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
-	let startingDate_factor = startingDate.toLocaleDateString("en-US", {
+	const ArrayChartData = Array(chartData)[0];
+
+	const startingDate = new Date(Date.now() - 0 * 24 * 60 * 60 * 1000);
+	const startingDate_factor = startingDate.toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",
 	});
 
-	let previousDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-	let previousDate_factor = previousDate.toLocaleDateString("en-US", {
+	const previousDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+	const previousDate_factor = previousDate.toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",
 	});
 
-	let currentAmount_index = ArrayChartData.findIndex(
+	const currentAmount_index = ArrayChartData.findIndex(
 		(item) => item.factor === startingDate_factor,
 	);
-	let currentAmount = ArrayChartData[currentAmount_index].amount;
+	const currentAmount = ArrayChartData[currentAmount_index].amount;
 
-	let previousAmount_index = ArrayChartData.findIndex(
+	const previousAmount_index = ArrayChartData.findIndex(
 		(item) => item.factor === previousDate_factor,
 	);
-	let previousAmount = ArrayChartData[previousAmount_index].amount;
+	const previousAmount = ArrayChartData[previousAmount_index].amount;
 
-	let difference = currentAmount - previousAmount;
+	const difference = currentAmount - previousAmount;
 
 	return (
 		<Card>

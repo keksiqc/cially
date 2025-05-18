@@ -2,7 +2,7 @@ import BottomCard from "./_main-components/bottom-card";
 import MemberBlock from "./_main-components/member-card";
 import MessagesBlock from "./_main-components/messages-card";
 
-let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 export default async function Dashboard({
 	searchParams,
@@ -11,16 +11,16 @@ export default async function Dashboard({
 }) {
 	const guildID = (await searchParams).guildID;
 
-	let API_REQ = await fetch(`${WEBSITE_URL}/api/server/${guildID}/fetchGuild`);
-	let data = await API_REQ.json();
+	const API_REQ = await fetch(`${WEBSITE_URL}/api/server/${guildID}/fetchGuild`);
+	const data = await API_REQ.json();
 
-	let guild = data.guildFound[0];
+	const guild = data.guildFound[0];
 	const date = new Date();
-	let new_date = date.toLocaleString("en-US");
-	let welcome_message = String(new_date).includes("AM")
+	const new_date = date.toLocaleString("en-US");
+	const welcome_message = String(new_date).includes("AM")
 		? "Good Morning"
 		: "Good Evening";
-	
+
 	return (
 		<>
 			<div className="mt-10 mr-4 ml-10 grid grid-rows-3 sm:min-w-dvh sm:grid-rows-none">

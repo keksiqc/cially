@@ -54,7 +54,7 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="min-w-screen min-h-dvh ">
+        <div className="min-w-full min-h-dvh ">
             <div>
 
                 <div className="text-2xl mt-4 ml-2">

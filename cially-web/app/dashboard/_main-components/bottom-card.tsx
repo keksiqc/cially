@@ -1,12 +1,6 @@
-import { MessageCircle, UsersRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
+	Card
 } from "@/components/ui/card";
 import {
 	Tooltip,
@@ -14,7 +8,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import BottomCard from "./_main-components/bottom-card";
 
 export default function BottomCard({ guild }) {
 	let correct_date =
@@ -56,7 +49,7 @@ export default function BottomCard({ guild }) {
 					</div>
 					<div className="">
 						Members: {guild.members}
-						<br></br>
+						<br />
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger>Available: {correct_available}</TooltipTrigger>
@@ -68,7 +61,7 @@ export default function BottomCard({ guild }) {
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
-						<br></br>
+						<br />
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger>Partnered: {partner_correct}</TooltipTrigger>
@@ -79,27 +72,27 @@ export default function BottomCard({ guild }) {
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
-						<br></br>
+						<br />
 						Created: {correct_date}
-						<br></br>
+						<br />
 						Owner: {guild.owner_username}
 					</div>
 				</div>
 
 				<div className="mt-5 grid grid-rows-1 text-center sm:col-span-2 sm:mt-0 sm:text-left">
 					<div>
-						<div className="text-2xl"></div>
-						<div className="text-gray-400 text-xs"></div>
+						<div className="text-2xl" />
+						<div className="text-gray-400 text-xs" />
 					</div>
 					<div className="">
 						Channels: {guild.channels}
-						<br></br>
+						<br />
 						Roles: {guild.roles}
-						<br></br>
+						<br />
 						Bans: {guild.bans}
-						<br></br>
+						<br />
 						Vanity URL: {correct_vanity_url}
-						<br></br>
+						<br />
 						Vanity Uses: {correct_vanity_uses}
 					</div>
 				</div>

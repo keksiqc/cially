@@ -1,23 +1,20 @@
 import PocketBase from "pocketbase";
-import registerGuild from "../../../_logic/registerGuild";
+import { hourData } from "./_lazy-import/hourdata";
 
 // Pocketbase Initialization
 const url = process.env.POCKETBASE_URL;
 const pb = new PocketBase(url);
 
-let collection_name = process.env.MESSAGE_COLLECTION;
-let guild_collection_name = process.env.GUILDS_COLLECTION;
+const collection_name = process.env.MESSAGE_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION;
 
 // Main GET Event
 export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
-	let previous_month_date = `${new Date().getUTCFullYear()}-${new Date().getUTCMonth().toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;
-	let sevenDaysAgoDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-	let sevenDaysAgoDate_formatted = `${sevenDaysAgoDate.getUTCFullYear()}-${(sevenDaysAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${sevenDaysAgoDate.getUTCDate().toString().padStart(2, "0")}`;
-	let fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
-	let fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+	const fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
+	const fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
 
 	const { id } = await params;
 
@@ -27,7 +24,7 @@ export async function GET(
 			.getFirstListItem(`discordID='${id}'`, {});
 
 		try {
-			let messagesArray = [];
+			const messagesArray = [];
 
 			const fourWeeksMessagesLog = await pb
 				.collection(collection_name)
@@ -36,18 +33,17 @@ export async function GET(
 					sort: "created",
 				});
 
-
-
-			fourWeeksMessagesLog.forEach((message) => {
+			for (const message of fourWeeksMessagesLog) {
 				let creation_date = String(message.created).slice(0, 19);
 				let creation_date_js = new Date(
 					Date.UTC(
-						parseInt(creation_date.slice(0, 4)),
-						parseInt(creation_date.slice(5, 7)) - 1,
-						parseInt(creation_date.slice(8, 10)),
+						Number.parseInt(creation_date.slice(0, 4)),
+						Number.parseInt(creation_date.slice(5, 7)) - 1,
+						Number.parseInt(creation_date.slice(8, 10)),
 					),
 				);
-				let creation_date_js_ms = creation_date_js.getTime();
+
+				const creation_date_js_ms = creation_date_js.getTime();
 
 				messagesArray.push({
 					message_id: message.id,
@@ -56,20 +52,20 @@ export async function GET(
 					created: creation_date_js_ms,
 					created_formatted: creation_date,
 				});
-			});
+			}
 
-			let todayMessages = [];
-			let todayDate = new Date();
-			let todayDateUTC = new Date(
+			const todayMessages = [];
+			const todayDate = new Date();
+			const todayDateUTC = new Date(
 				Date.UTC(
 					todayDate.getUTCFullYear(),
 					todayDate.getUTCMonth(),
 					todayDate.getUTCDate(),
 				),
 			);
-			let todayDate_ms = todayDateUTC.getTime();
+			const todayDate_ms = todayDateUTC.getTime();
 
-			messagesArray.forEach((message) => {
+			for (const message of messagesArray) {
 				if (message.created === todayDate_ms) {
 					todayMessages.push({
 						message_id: message.id,
@@ -79,45 +75,33 @@ export async function GET(
 						created_formatted: message.created_formatted,
 					});
 				}
-			});
-
-			let hourData = [];
-
-			let i = 0;
-			//
-			while (i < 25) {
-				if (i < 10) {
-					hourData.push({ hour: `0${i}`, amount: 0 });
-				} else {
-					hourData.push({ hour: `${i}`, amount: 0 });
-				}
-				i = i + 1;
 			}
 
-			todayMessages.forEach((record) => {
-				let minutes = [record.created_formatted.slice(11, 13)];
-				minutes.forEach((minute) => {
-					let position = hourData.findIndex((item) => item.hour === minute);
+			for (const record of todayMessages) {
+				const minutes = [record.created_formatted.slice(11, 13)];
+				for (const minute of minutes) {
+					const position = hourData.findIndex((item) => item.hour === minute);
 					if (position !== -1) {
 						hourData[position].amount = hourData[position].amount + 1;
 					} else {
 						hourData.push({ hour: minute, amount: 1 });
 					}
-				});
-			});
+				}
+			}
+
 			hourData.sort((a, b) => a.hour - b.hour);
 
-			let monthlyMessages = [];
-			let LastWeekDateUTC = new Date(
+			const monthlyMessages = [];
+			const LastWeekDateUTC = new Date(
 				Date.UTC(
 					todayDate.getUTCFullYear(),
 					todayDate.getUTCMonth() - 1,
 					todayDate.getUTCDate(),
 				),
 			);
-			let LastWeekDateUTC_ms = LastWeekDateUTC.getTime();
+			const LastWeekDateUTC_ms = LastWeekDateUTC.getTime();
 
-			messagesArray.forEach((message) => {
+			for (const message of messagesArray) {
 				if (message.created >= LastWeekDateUTC_ms) {
 					monthlyMessages.push({
 						message_id: message.id,
@@ -127,49 +111,49 @@ export async function GET(
 						created_formatted: message.created_formatted,
 					});
 				}
-			});
+			}
 
 			let weekData = [];
 
 			let u = 0;
 
 			while (u < 8) {
-				let uDaysAgoDate = new Date(Date.now() - u * 24 * 60 * 60 * 1000);
-				let uDaysAgoDate_formatted = `${(uDaysAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${uDaysAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+				const uDaysAgoDate = new Date(Date.now() - u * 24 * 60 * 60 * 1000);
+				const uDaysAgoDate_formatted = `${(uDaysAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${uDaysAgoDate.getUTCDate().toString().padStart(2, "0")}`;
 				weekData.push({ date: `${uDaysAgoDate_formatted}`, amount: 0 });
 				u = u + 1;
 			}
 
-			monthlyMessages.forEach((record) => {
-				let monthly_msg = [record.created_formatted.slice(5, 10)];
-				monthly_msg.forEach((monthly_msg) => {
-					let position = weekData.findIndex(
+			for (const record of monthlyMessages) {
+				const monthly_msgs = [record.created_formatted.slice(5, 10)];
+				for (const monthly_msg of monthly_msgs) {
+					const position = weekData.findIndex(
 						(item) => item.date === monthly_msg,
 					);
 					if (position !== -1) {
 						weekData[position].amount = weekData[position].amount + 1;
-					} else {
-						return;
 					}
-				});
-			});
+				}
+			}
 			weekData = weekData.toReversed();
+
+			console.log("oioioi");
 
 			let fourWeekData = [];
 
 			let w = 0;
 			while (w < 22) {
-				let startingDate = new Date(Date.now() - w * 24 * 60 * 60 * 1000);
-				let startingDate_formatted = `${startingDate.getUTCFullYear().toString().padStart(2, "0")}-${(startingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${startingDate.getUTCDate().toString().padStart(2, "0")}`;
-				let startingDate_ms = startingDate.getTime();
-				let startingDate_factor = startingDate.toLocaleDateString("en-US", {
+				const startingDate = new Date(Date.now() - w * 24 * 60 * 60 * 1000);
+				const startingDate_formatted = `${startingDate.getUTCFullYear().toString().padStart(2, "0")}-${(startingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${startingDate.getUTCDate().toString().padStart(2, "0")}`;
+				const startingDate_ms = startingDate.getTime();
+				const startingDate_factor = startingDate.toLocaleDateString("en-US", {
 					month: "short",
 					day: "numeric",
 				});
 
-				let endingDate = new Date(Date.now() - (7 + w) * 24 * 60 * 60 * 1000);
-				let endingDate_formatted = `${endingDate.getUTCFullYear().toString().padStart(2, "0")}-${(endingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${endingDate.getUTCDate().toString().padStart(2, "0")}`;
-				let endingDate_ms = endingDate.getTime();
+				const endingDate = new Date(Date.now() - (7 + w) * 24 * 60 * 60 * 1000);
+				const endingDate_formatted = `${endingDate.getUTCFullYear().toString().padStart(2, "0")}-${(endingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${endingDate.getUTCDate().toString().padStart(2, "0")}`;
+				const endingDate_ms = endingDate.getTime();
 
 				fourWeekData.push({
 					factor: `${startingDate_factor}`,
@@ -180,10 +164,10 @@ export async function GET(
 				w = w + 7;
 			}
 
-			monthlyMessages.forEach((record) => {
-				let creation_date = new Date(record.created_formatted.slice(0, 10));
-				let creation_date_ms = creation_date.getTime();
-				let position = fourWeekData.findIndex(
+			for (const record of monthlyMessages) {
+				const creation_date = new Date(record.created_formatted.slice(0, 10));
+				const creation_date_ms = creation_date.getTime();
+				const position = fourWeekData.findIndex(
 					(item) =>
 						item.starting_date.startingDate_ms >= creation_date_ms &&
 						item.finishing_date.endingDate_ms <= creation_date_ms,
@@ -193,25 +177,18 @@ export async function GET(
 				} else {
 					return;
 				}
-			});
+			}
 			fourWeekData = fourWeekData.toReversed();
 
-			
-
-			let generalDataArray = []
+			const generalDataArray = [];
 			generalDataArray.push({
 				total_messages: guild.total_messages,
 				message_deletions: guild.message_deletions,
 				message_edits: guild.message_edits,
 				total_attachments: guild.total_attachments,
-				
-			})
+			});
 
-			console.log(generalDataArray)
-
-
-
-			let finalData = [];
+			const finalData = [];
 			finalData.push({
 				HourData: hourData,
 				WeekData: weekData,
@@ -221,13 +198,15 @@ export async function GET(
 
 			return Response.json({ finalData });
 		} catch (err) {
-			let notFound = [{ errorCode: 404 }];
-			return Response.json({ notFound });
+			const notFound = [{ errorCode: 404 }];
 			console.log(err);
+			return Response.json({ notFound });
 		}
 	} catch (err) {
 		if (err.status === 400) {
-			let notFound = [{ errorCode: 404 }];
+			const notFound = [{ errorCode: 404 }];
+			console.log(err);
+
 			return Response.json({ notFound });
 		}
 	}

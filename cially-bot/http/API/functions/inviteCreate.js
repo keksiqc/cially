@@ -12,7 +12,7 @@ async function inviteCreate(req, res, client) {
 	// Parse the request body and debug it
 	let body = req.body;
 
-	const { guildID, channelID } = body;
+	const { guildID, channelID, authorID } = body;
 
 	debug({ text: `New POST Request: \n${JSON.stringify(body)}` });
 
@@ -32,6 +32,7 @@ async function inviteCreate(req, res, client) {
 			const itemData = {
 				guildID: guild.id,
 				channelID: channelID,
+				authorID: authorID
 			};
 			const newInvite = await pb.collection(collection_name).create(itemData);
 			debug({ text: ` Invite has been added in the database` });

@@ -15,9 +15,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import GuildNotFound from "./_components/_events/guildNotFound";
-import LoadingSVG from "./_components/_events/loading-page";
 import { Skeleton } from "@/components/ui/skeleton";
+
 
 import { Suspense, useEffect, useState } from "react";
 
@@ -54,16 +53,19 @@ function ClientComponent() {
 		console.log(guildData)
 		// guildData = dataJSON.data;
 
+
 		if (!guildData.AvailableGuilds) {
 			return (
 				<>
 					<div className="w-20 place-self-center">
+
 						<img src="/logo-png.png"></img>
 					</div>
 					<div className="text-2xl  text-center">Available Guilds</div>
 					<div className="text-sm text-gray-400 text-center">
 						Please Select the Guild you would like to view
 					</div>
+
 
 					<div className="mb-10"></div>
 
@@ -78,6 +80,7 @@ function ClientComponent() {
 					</div>
 				</>
 			);
+
 		} else {
 			let guildDataArray = guildData.AvailableGuilds;
 			let guildLength = guildDataArray.length;
@@ -158,6 +161,7 @@ function ClientComponent() {
 		return (
 			<>
 				<div className="w-20 place-self-center">
+
 					<img src="/logo-png.png"></img>
 				</div>
 				<div className="text-center mx-5">
@@ -174,6 +178,7 @@ function ClientComponent() {
 					>
 						GitHub Redirect
 					</a>
+
 					<br></br>
 					<br></br>
 					<div>Error {err.name}</div>
