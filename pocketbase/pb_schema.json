@@ -125,16 +125,18 @@
                 "type": "text"
             },
             {
+                "autogeneratePattern": "",
                 "hidden": false,
-                "id": "number2875063074",
-                "max": null,
-                "min": null,
+                "id": "text2875063074",
+                "max": 0,
+                "min": 0,
                 "name": "memberID",
-                "onlyInt": false,
+                "pattern": "",
                 "presentable": false,
+                "primaryKey": false,
                 "required": false,
                 "system": false,
-                "type": "number"
+                "type": "text"
             },
             {
                 "cascadeDelete": false,
@@ -148,6 +150,15 @@
                 "required": false,
                 "system": false,
                 "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "bool2963428983",
+                "name": "unique",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "bool"
             },
             {
                 "hidden": false,
@@ -198,16 +209,18 @@
                 "type": "text"
             },
             {
+                "autogeneratePattern": "",
                 "hidden": false,
-                "id": "number2875063074",
-                "max": null,
-                "min": null,
+                "id": "text2875063074",
+                "max": 0,
+                "min": 0,
                 "name": "memberID",
-                "onlyInt": false,
+                "pattern": "",
                 "presentable": false,
+                "primaryKey": false,
                 "required": false,
                 "system": false,
-                "type": "number"
+                "type": "text"
             },
             {
                 "cascadeDelete": false,
