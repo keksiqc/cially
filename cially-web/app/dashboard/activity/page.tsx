@@ -30,7 +30,7 @@ function ClientComponent() {
 	useEffect(() => {
 		async function fetchData() {
 			const chartDataReceived = await fetch(
-				`guildID}/fetchActivityData`,
+				`/api/server/${guildID}/fetchActivityData`,
 			);
 			const json = await chartDataReceived.json();
 			setChartData(json);
