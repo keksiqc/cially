@@ -65,13 +65,11 @@ All ongoing synchronization and data enrichment—such as resolving names or syn
 > Do not change anything in the database if you don't know what you are doing! Changing a small detail might break the dashboard
 
 ### Docker Setup
-1. Clone the repository
-2. Open the directory where the source code was cloned and locate the `docker-compose.yaml` file
-3. On `cially-web` service find the line `NEXT_PUBLIC_WEBSITE_URL=http://localhost:3000` and replace with the actual URL where your dashboard is going to run on. **Do not include `/` in the end** Example URLs would be `http://192.12xx.xxx:3000` or `http://cially-test-domain.com`
-4. Go back to your CLI and run `cd cially` (or whatever the directory that contains the source code is)
-5. Run `docker compose up --build`
-6. Make sure to follow the initial setup instructions regarding Pocketbase/Discord Bot Setup
-7. And success! The dashboard should be up and running! Make sure to let the bot store some data first before taking a look at your servers!
+1. Download or copy the [docker-compose.yaml](./docker-compose.yaml) file from the repository.
+2. Edit the docker-compose.yaml file and replace the environment variables with your own values.
+3. Run `docker compose up -d` to start the services.
+4. Make sure to follow the initial setup instructions regarding Pocketbase/Discord Bot Setup.
+5. Success! The dashboard should be up and running! Make sure to let the bot store some data first before checking your servers! 
 
 ### Manual Setup
 #### Pocketbase Instance
