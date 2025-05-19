@@ -10,7 +10,7 @@ services:
       - CLIENT_ID=${CLIENT_ID}
       - API_URL=http://cially-bot:3001
       - DEBUGGING=${BOT_DEBUGGING:-FALSE}
-      - POCKETBASE_URL=http://cially-pocketbase:8090
+      - POCKETBASE_URL=http://pocketbase:8090
       - GUILD_COLLECTION=guilds
       - MESSAGE_COLLECTION=messages
       - INVITE_COLLECTION=invites
@@ -32,7 +32,7 @@ services:
     environment:
       # Runtime environment variables
       - NEXT_PUBLIC_BOT_API_URL=http://cially-bot:3001
-      - POCKETBASE_URL=http://cially-pocketbase:8090
+      - POCKETBASE_URL=http://pocketbase:8090
       - MESSAGE_COLLECTION=messages
       - INVITE_COLLECTION=invites
       - MEMBER_LEAVES_COLLECTION=member_leaves
