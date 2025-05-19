@@ -1,15 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
-import { MessageChart } from "@/app/_components/_dashboard/chart-preview";
+import { redirect, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import GuildNotFound from "../_components/_events/guildNotFound";
 import LoadingSVG from "../_components/_events/loading-page";
-import { Suspense } from "react";
-
-
-let WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 function ClientComponent() {
 	const searchParams = useSearchParams();
@@ -18,10 +12,10 @@ function ClientComponent() {
 
 	useEffect(() => {
 		async function fetchData() {
-			let chartDataReceived = await fetch(
-				`${WEBSITE_URL}/api/server/${guildID}/fetchGuild`,
+			const chartDataReceived = await fetch(
+				`/api/server/${guildID}/fetchGuild`,
 			);
-			let json = await chartDataReceived.json();
+			const json = await chartDataReceived.json();
 			setChartData(json);
 		}
 		fetchData();
@@ -38,8 +32,8 @@ function ClientComponent() {
 
 export default function DataDashboard() {
 	return (
-	  <Suspense fallback={<LoadingSVG />}>
-		<ClientComponent />
-	  </Suspense>
+		<Suspense fallback={<LoadingSVG />}>
+			<ClientComponent />
+		</Suspense>
 	);
-  }
+}

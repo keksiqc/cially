@@ -1,14 +1,14 @@
 "use client";
 
+import GuildNotFound from "@/app/_components/_events/guildNotFound";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import GuildNotFound from "@/app/_components/_events/guildNotFound";
 import ActiveChannels from "../activity/_components/active_channels";
 import ActiveHours from "../activity/_components/active_hours";
 import ActiveUsers from "../activity/_components/active_users";
 import GeneralActivityData from "./_components/general_data";
 
-const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+
 
 // FIXME Error when there are no messages
 
@@ -30,7 +30,7 @@ function ClientComponent() {
 	useEffect(() => {
 		async function fetchData() {
 			const chartDataReceived = await fetch(
-				`${WEBSITE_URL}/api/server/${guildID}/fetchActivityData`,
+				`guildID}/fetchActivityData`,
 			);
 			const json = await chartDataReceived.json();
 			setChartData(json);

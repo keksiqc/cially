@@ -27,15 +27,13 @@ export default function MessagesDashboard() {
 	);
 }
 
-const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
-
 function ClientComponent() {
 	try {
 		const [guildData, setGuildData] = useState([{ amount: 69 }]);
 
 		useEffect(() => {
 			async function fetchData() {
-				const DataReceived = await fetch(`${WEBSITE_URL}/api/fetchGuilds`);
+				const DataReceived = await fetch(`/api/fetchGuilds`);
 				const json = await DataReceived.json();
 				setGuildData(json.data);
 				console.log(json);
@@ -82,7 +80,7 @@ function ClientComponent() {
 		const guildCards = guildDataArray.map((guild) =>
 			guild.in_db === true ? (
 				<a
-					href={`${process.env.NEXT_PUBLIC_WEBSITE_URL}/guild?guildID=${guild.id}`}
+					href={`/guild?guildID=${guild.id}`}
 					key={guild.id}
 				>
 					<Card className="hover:bg-white/2 transition-all mx-5">
