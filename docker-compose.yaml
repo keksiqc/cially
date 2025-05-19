@@ -6,8 +6,8 @@ services:
     container_name: cially-bot
     restart: unless-stopped
     environment:
-      - TOKEN=${BOT_TOKEN}
-      - CLIENT_ID=${BOT_CLIENT_ID}
+      - TOKEN=${TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
       - API_URL=http://cially-bot:3001
       - DEBUGGING=${BOT_DEBUGGING:-FALSE}
       - POCKETBASE_URL=http://pocketbase:8090
@@ -26,19 +26,12 @@ services:
       - cially-network
 
   cially-web:
-    # This combines image and build configurations so you can still use docker compose up
     image: ghcr.io/skellgreco/cially-web:latest
-    build:
-      context: . # Adjust this to point to your Dockerfile location
-      dockerfile: Dockerfile
-      args:
-        # Build-time arguments (NEXT_PUBLIC_* variables)
-        - NEXT_PUBLIC_WEBSITE_URL=http://localhost:3000
-        - NEXT_PUBLIC_BOT_API_URL=http://cially-bot:3001
     container_name: cially-web
     restart: unless-stopped
     environment:
       # Runtime environment variables
+      - NEXT_PUBLIC_BOT_API_URL=http://cially-bot:3001
       - POCKETBASE_URL=http://pocketbase:8090
       - MESSAGE_COLLECTION=messages
       - INVITE_COLLECTION=invites

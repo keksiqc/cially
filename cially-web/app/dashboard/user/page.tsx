@@ -1,24 +1,21 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
-	FormLabel,
-	FormMessage,
+	FormMessage
 } from "@/components/ui/form";
-
-const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import LoadingUserCard from "./_components/loading-usercard";
+
 
 const formSchema = z.object({
 	id: z.string().min(5, {
@@ -27,10 +24,9 @@ const formSchema = z.object({
 });
 
 import { Suspense, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import StaticUserCard from "./_components/static-usercard";
-import ErrorUserCard from "./_components/error-usercard";
 import DynamicUserCard from "./_components/dynamic-usercard";
+import ErrorUserCard from "./_components/error-usercard";
+import StaticUserCard from "./_components/static-usercard";
 
 export default function UserSearchPage() {
 	return (
@@ -59,10 +55,9 @@ function ClientComponent() {
 		const InputData = Array(values)[0].id;
 
 		const DataReceived = await fetch(
-			`${WEBSITE_URL}/api/server/${guildID}/fetchUserData/${InputData}`,
+			`/api/server/${guildID}/fetchUserData/${InputData}`,
 		);
 		const json = await DataReceived.json();
-		setUserData(Array(json));
 	}
 
 	function Header() {

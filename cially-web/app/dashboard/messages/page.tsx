@@ -1,15 +1,12 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import GuildNotFound from "@/app/_components/_events/guildNotFound";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import GeneralMessageDataCard from "./_components/_message-charts/general_data";
+import Last24h from "./_components/_message-charts/last_24hrs";
 import Last4Weeks from "./_components/_message-charts/last_4weeks";
 import Last7d from "./_components/_message-charts/last_7d";
-import Last24h from "./_components/_message-charts/last_24hrs";
-import GeneralMessageDataCard from "./_components/_message-charts/general_data";
-import { Suspense } from "react";
-
-const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL;
 
 export default function MessagesActivityPage() {
 	return (
@@ -27,7 +24,7 @@ function ClientComponent() {
 	useEffect(() => {
 		async function fetchData() {
 			const chartDataReceived = await fetch(
-				`${WEBSITE_URL}/api/server/${guildID}/fetchMessageData`,
+				`/api/server/${guildID}/fetchMessageData`,
 			);
 			const json = await chartDataReceived.json();
 			setChartData(json);
@@ -61,10 +58,10 @@ function ClientComponent() {
 		);
 	}
 
-	let data_24h = chartData.finalData[0].HourData;
-	let data_7d = chartData.finalData[0].WeekData;
-	let data_4w = chartData.finalData[0].FourWeekData;
-	let data_general = chartData.finalData[0].GeneralData;
+	const data_24h = chartData.finalData[0].HourData;
+	const data_7d = chartData.finalData[0].WeekData;
+	const data_4w = chartData.finalData[0].FourWeekData;
+	const data_general = chartData.finalData[0].GeneralData;
 
 	return (
 		<>
