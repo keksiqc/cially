@@ -3,7 +3,9 @@
 </p>
 
 # 🪼 Cially
-Cially is an open source dashboard that allows you to view detailed insights regarding your [Discord](https://discord.com) Server!
+**Cially** is a powerful, open-source dashboard designed to provide in-depth insights, real-time analytics, and detailed statistics for your Discord server. Monitor member activity, track engagement trends, and make data-driven decisions with ease. 
+
+Perfect for community managers, moderators, and server admins looking to optimize their Discord communities!
 
 ## 🐚 Features
 - [x] Shows the name, description, icon and current members
