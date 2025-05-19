@@ -58,6 +58,7 @@ function ClientComponent() {
 			`/api/server/${guildID}/fetchUserData/${InputData}`,
 		);
 		const json = await DataReceived.json();
+		setUserData(Array(json));
 	}
 
 	function Header() {
