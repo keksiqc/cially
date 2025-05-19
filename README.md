@@ -3,7 +3,7 @@
 </p>
 
 # 🪼 Cially
-Cially is an open source dashboard that allows you to view detailed insights regarding your [Discord](https://discord.com) Server!
+Cially is an open source dashboard that allows you to view detailed insights and stats regarding your [Discord](https://discord.com) Server!
 
 ## 🐚 Features
 - [x] Shows the name, description, icon and current members
