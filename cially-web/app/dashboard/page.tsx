@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import BottomCard from "./_main-components/bottom-card";
 import MemberBlock from "./_main-components/member-card";
 import MessagesBlock from "./_main-components/messages-card";
+import { useSearchParams } from "next/navigation";
+
 
 interface GuildData {
 	name: string;
@@ -91,12 +93,9 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 	);
 }
 
-export default async function Dashboard({
-	searchParams,
-}: {
-	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-	const guildID = (await searchParams).guildID;
+export default function Dashboard() {
+	const searchParams = useSearchParams();
+	const guildID = searchParams.get("guildID");
 
 	return (
 		<DashboardClientComponent guildID={guildID} />
