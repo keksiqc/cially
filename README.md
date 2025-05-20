@@ -68,10 +68,11 @@ All ongoing synchronization and data enrichment—such as resolving names or syn
 
 ### Docker Setup
 1. Download or copy the [docker-compose.yaml](./docker-compose.yaml) file from the repository.
-2. Edit the docker-compose.yaml file and replace the environment variables with your own values.
-3. Run `docker compose up -d` to start the services.
-4. Make sure to follow the initial setup instructions regarding Pocketbase/Discord Bot Setup.
-5. Success! The dashboard should be up and running! Make sure to let the bot store some data first before checking your servers! 
+2. (Optional) Copy the /pocketbase/pb_migrations directory to the same directory as the docker-compose.yaml file to automatically create the needed collections.
+3. Edit the docker-compose.yaml file and replace the environment variables with your own values.
+4. Run `docker compose up -d` to start the services.
+5. Make sure to follow the initial setup instructions regarding Pocketbase/Discord Bot Setup.
+6. Success! The dashboard should be up and running! Make sure to let the bot store some data first before checking your servers! 
 
 ### Manual Setup
 #### Pocketbase Instance
