@@ -11,14 +11,55 @@ body {
 @custom-variant dark (&:is(.dark *));
 
 .bg-gr {
-	background: #071b4d;
 	background: radial-gradient(
 		at 20% 25%,
-		rgb(5, 15, 40) 0%,
+		rgb(5, 15, 40) 0%, 
 		rgb(12, 12, 12) 46%,
 		rgba(18, 18, 18, 1) 100%
 	);
 }
+
+.bg-gr-pink {
+	background: radial-gradient(
+		at 20% 25%,
+		rgb(36, 8, 24) 0%,
+		rgb(12, 12, 12) 46%,
+		rgba(18, 18, 18, 1) 100%
+	);
+}
+
+.bg-gr-gray {
+	background: radial-gradient(
+		at 20% 25%,
+		rgb(19, 18, 18) 0%,
+		rgb(12, 12, 12) 46%,
+		rgba(18, 18, 18, 1) 100%
+	);
+}
+
+.bg-gr-brown {
+	background: radial-gradient(
+		at 20% 25%,
+		rgb(26, 17, 10) 0%, 
+		rgb(12, 12, 12) 46%,
+		rgba(18, 18, 18, 1) 100%
+	);
+}
+
+/* Default Dark Theme
+.bg-gr {
+	background: radial-gradient(
+		at 20% 25%,
+		rgb(5, 15, 40) 0%, // Blue (Main)
+		rgb(36, 8, 24) 0%, // Pink
+		rgb(19, 18, 18) 0%, // Black
+		rgb(26, 17, 10) 0%, // Brown
+		
+		
+		rgb(12, 12, 12) 46%,
+		rgba(18, 18, 18, 1) 100%
+	);
+} */
 
 
 
