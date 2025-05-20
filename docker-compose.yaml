@@ -49,6 +49,11 @@ services:
     image: ghcr.io/keksiqc/pocketbase:0.26.6
     container_name: cially-pocketbase
     restart: unless-stopped
+    command:
+      - --encryptionEnv # optional
+      - ENCRYPTION # optional
+    environment:
+      ENCRYPTION: $(openssl rand -hex 16) # optional (Ensure this is a 32-character long encryption key https://pocketbase.io/docs/going-to-production/#enable-settings-encryption)
     volumes:
       - pocketbase-data:/pb/pb_data
       - ./pocketbase/pb_migrations:/pb/pb_migrations # can be removed after the first run
