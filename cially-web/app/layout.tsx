@@ -19,15 +19,13 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
 	const cookieStore = await cookies();
-	const theme = cookieStore.get("theme") || {value: "blue"};
-	console.log(theme);
-	const gridClass = {
-			blue: "bg-gr",
-			gray: "bg-gr-gray",
-			pink: "bg-gr-pink",
-			brown: "bg-gr-brown",
-		}[theme.value];
-	console.log(gridClass)
+	const theme = cookieStore.get("theme") || { value: "blue" };
+	const themeClass = {
+		blue: "bg-gr",
+		gray: "bg-gr-gray",
+		pink: "bg-gr-pink",
+		brown: "bg-gr-brown",
+	}[theme.value];
 
 	return (
 		<>
@@ -35,7 +33,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 				<head />
 				<body className="">
 					<div className="overflow-x-hidden min-h-screen">
-						<div className={`${gridClass} fixed inset-0 w-full h-full -z-10`} />
+						<div
+							className={`${themeClass} fixed inset-0 w-full h-full -z-10`}
+						/>
 						<div className="relative z-0 p-6">
 							<ThemeProvider
 								attribute="class"
