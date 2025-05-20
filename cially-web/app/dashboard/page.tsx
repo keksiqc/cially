@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import BottomCard from "./_main-components/bottom-card";
 import MemberBlock from "./_main-components/member-card";
 import MessagesBlock from "./_main-components/messages-card";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 interface GuildData {
 	name: string;
@@ -12,7 +14,9 @@ interface GuildData {
 	in_db: boolean;
 }
 
-function DashboardClientComponent({ guildID }: { guildID: string | string[] | undefined }) {
+function DashboardClientComponent() {
+	const searchParams = useSearchParams();
+	const guildID = searchParams.get("guildID");
 	const [guildData, setGuildData] = useState<GuildData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -43,7 +47,7 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 	}, [guildID]);
 
 	if (loading) {
-		return <div>Loading...</div>
+		return <div>Loading...</div>;
 	}
 
 	if (error) {
@@ -91,14 +95,10 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 	);
 }
 
-export default async function Dashboard({
-	searchParams,
-}: {
-	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-	const guildID = (await searchParams).guildID;
-
+export default function Dashboard() {
 	return (
-		<DashboardClientComponent guildID={guildID} />
+		<Suspense>
+			<DashboardClientComponent />
+		</Suspense>
 	);
 }
