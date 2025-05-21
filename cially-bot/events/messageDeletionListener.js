@@ -10,7 +10,7 @@ module.exports = {
 	name: Events.Raw,
 	once: false,
 	execute(packet, client) {
-		if (packet.t !== 'MESSAGE_DELETE') return;
+		if (packet.t !== "MESSAGE_DELETE") return;
 		debug({ text: `Message Deleted. Fetching Guild...` });
 
 		try {
@@ -25,13 +25,11 @@ module.exports = {
 				data: info,
 				guildId: guildID,
 				type: "messageDelete",
-			}); 
-
+			});
 		} catch (err) {
-			error({ text: `Failed to save Message Deletion in the DB. Error: ${err}` });
+			error({
+				text: `Failed to save Message Deletion in the DB. Error: ${err}`,
+			});
 		}
-
-
-		}
-	
+	},
 };

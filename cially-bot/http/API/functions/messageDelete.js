@@ -25,17 +25,15 @@ async function messageDelete(req, res, client) {
 		debug({ text: `Guild has been found and is ready to add data to it` });
 
 		let new_general_data = {
-			"message_deletions": guild.message_deletions + 1,
+			message_deletions: guild.message_deletions + 1,
+		};
 
-		}
-
-		const newGeneralData = await pb.collection(`${guild_collection_name}`).update(`${guild.id}`, new_general_data)
+		const newGeneralData = await pb
+			.collection(`${guild_collection_name}`)
+			.update(`${guild.id}`, new_general_data);
 		debug({
 			text: `General Guild Data has been updated in the database`,
 		});
-
-
-		
 	} catch (err) {
 		// 404 error -> guild is not on the database. Attempt to add it
 		if (err.status === 404) {

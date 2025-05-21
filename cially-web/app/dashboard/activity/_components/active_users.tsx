@@ -1,10 +1,6 @@
 "use client";
 import { XAxis } from "recharts";
-import {
-	Bar,
-	BarChart,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, YAxis } from "recharts";
 
 import {
 	Card,

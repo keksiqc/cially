@@ -12,7 +12,11 @@ interface GuildData {
 	in_db: boolean;
 }
 
-function DashboardClientComponent({ guildID }: { guildID: string | string[] | undefined }) {
+function DashboardClientComponent({
+	guildID,
+}: {
+	guildID: string | string[] | undefined;
+}) {
 	const [guildData, setGuildData] = useState<GuildData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -43,7 +47,7 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 	}, [guildID]);
 
 	if (loading) {
-		return <div>Loading...</div>
+		return <div>Loading...</div>;
 	}
 
 	if (error) {
@@ -98,7 +102,5 @@ export default async function Dashboard({
 }) {
 	const guildID = (await searchParams).guildID;
 
-	return (
-		<DashboardClientComponent guildID={guildID} />
-	);
+	return <DashboardClientComponent guildID={guildID} />;
 }

@@ -78,27 +78,34 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 		return null;
 	}
 
+	// Create CSS rules for each theme
+	const cssRules = Object.entries(THEMES).map(([theme, prefix]) => {
+		// Create CSS rules for each color config
+		const colorRules = colorConfig
+			.map(([key, itemConfig]) => {
+				const color =
+					itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+					itemConfig.color;
+				return color ? `  --color-${key}: ${color};` : "";
+			})
+			.filter(Boolean);
+
+		// Return the CSS rule for this theme
+		return {
+			selector: `${prefix} [data-chart=${id}]`,
+			rules: colorRules,
+		};
+	});
+
+	// Use React to create style elements instead of dangerouslySetInnerHTML
 	return (
-		<style
-			dangerouslySetInnerHTML={{
-				__html: Object.entries(THEMES)
-					.map(
-						([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-	.map(([key, itemConfig]) => {
-		const color =
-			itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-			itemConfig.color;
-		return color ? `  --color-${key}: ${color};` : null;
-	})
-	.join("\n")}
-}
-`,
-					)
-					.join("\n"),
-			}}
-		/>
+		<>
+			{cssRules.map((rule) => (
+				<style key={rule.selector}>
+					{`${rule.selector} {\n${rule.rules.join("\n")}\n}`}
+				</style>
+			))}
+		</>
 	);
 };
 

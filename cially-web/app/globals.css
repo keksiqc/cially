@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 
 body {
-	font-family: "Outfit", Aral;
+	font-family: "Outfit", Arial, sans-serif;
 	margin: 0;
 	padding: 0;
 }
@@ -19,8 +19,6 @@ body {
 		rgba(18, 18, 18, 1) 100%
 	);
 }
-
-
 
 @theme inline {
 	--color-background: hsl(var(--background));

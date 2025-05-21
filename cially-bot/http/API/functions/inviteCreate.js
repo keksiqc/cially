@@ -32,7 +32,7 @@ async function inviteCreate(req, res, client) {
 			const itemData = {
 				guildID: guild.id,
 				channelID: channelID,
-				authorID: authorID
+				authorID: authorID,
 			};
 			const newInvite = await pb.collection(collection_name).create(itemData);
 			debug({ text: ` Invite has been added in the database` });
