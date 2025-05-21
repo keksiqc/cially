@@ -1,19 +1,43 @@
 // Package Imports
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-require("dotenv").config({ path: path.resolve(__dirname, ".env") });
-const { REST, Routes } = require("discord.js");
-var colors = require("colors");
+const { Client, Collection, GatewayIntentBits } = require("discord.js"); // Removed Events, REST, Routes
+require("dotenv").config(); // Simplified dotenv config
+const colors = require("colors"); // Keep for now, for String.prototype extensions
+const { error } = require("./terminal/error"); // Import custom error utility
 
 // Config Imports from .env
 const token = process.env.TOKEN;
-const clientId = process.env.CLIENT_ID;
+// const clientId = process.env.CLIENT_ID; // clientId is not used in this file
 
-// Currently using every single intent.
-// Using https://discord-intents-calculator.vercel.app/ to generate the intents ID
+// Explicitly list necessary intents
 const client = new Client({
-	intents: 53608447,
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers, // For userJoin, userLeave events
+		GatewayIntentBits.GuildMessages, // For messageCreate, messageDelete, messageUpdate
+		GatewayIntentBits.MessageContent, // If bot needs to read message content
+		GatewayIntentBits.GuildInvites, // For inviteCreate
+		// Add any other specific intents your bot relies on.
+		// Note: 53608447 is a very broad number, including privileged intents.
+		// It's better to be explicit. For example, GuildPresences and GuildMessageTyping are often not needed.
+		// If unsure, start with a minimal set and add as required by bot functionality.
+		// The number 53608447 includes:
+		// Guilds, GuildMembers, GuildModeration (Bans), GuildEmojisAndStickers, GuildIntegrations, GuildWebhooks,
+		// GuildInvites, GuildVoiceStates, GuildPresences, GuildMessages, GuildMessageReactions, GuildMessageTyping,
+		// DirectMessages, DirectMessageReactions, DirectMessageTyping, MessageContent, GuildScheduledEvents,
+		// AutoModerationConfiguration, AutoModerationExecution
+		GatewayIntentBits.GuildModeration, // Example: if ban events were tracked
+		GatewayIntentBits.GuildVoiceStates, // If bot interacts with voice
+		// GatewayIntentBits.GuildPresences, // Often privileged and not needed unless tracking presence
+		GatewayIntentBits.GuildMessageReactions, // If bot uses reactions
+		// GatewayIntentBits.DirectMessages, // If bot interacts in DMs
+		// GatewayIntentBits.DirectMessageReactions,
+		// GatewayIntentBits.DirectMessageTyping,
+		GatewayIntentBits.GuildScheduledEvents,
+		GatewayIntentBits.AutoModerationConfiguration,
+		GatewayIntentBits.AutoModerationExecution,
+	],
 });
 
 // Command Handler

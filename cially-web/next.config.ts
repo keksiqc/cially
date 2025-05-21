@@ -3,9 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
 	output: "standalone",
 	typescript: {
-		ignoreBuildErrors: true,
+		ignoreBuildErrors: false, // Changed to false
 	},
-	
 };
 
 export default nextConfig;

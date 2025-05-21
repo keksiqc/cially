@@ -1,13 +1,17 @@
-const fs = require("node:fs");
-const path = require("node:path");
-require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+const colors = require("colors"); // Explicitly require colors
 
+// process.env.DEBUGGING should be available globally after index.js setup
 const debugging_status = process.env.DEBUGGING;
 
 // Simple Script to display prettier terminal messages
-function debug({ text }) {
+function debug({ text, type }) {
+	// Added type for potential SUCCESS messages
 	if (debugging_status === "TRUE") {
-		console.log(`\n[DEBUG] `.yellow + `${text}`);
+		if (type === "SUCCESS") {
+			console.log(`${colors.green("\n[SUCCESS]")} ${text}`);
+		} else {
+			console.log(`${colors.yellow("\n[DEBUG]")} ${text}`);
+		}
 	}
 }
 

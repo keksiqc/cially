@@ -12,15 +12,16 @@ export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
-	const fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
-	const fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+	const threeWeeksAgo = new Date(); // Renamed for clarity regarding "last 4 weeks" behavior
+	threeWeeksAgo.setUTCDate(threeWeeksAgo.getUTCDate() - 21);
+	const threeWeeksAgoDate_formatted = threeWeeksAgo.toISOString().slice(0, 10); // YYYY-MM-DD
 
 	const { id } = await params;
 
 	try {
 		const guild = await pb
 			.collection(guild_collection_name)
-			.getFirstListItem(`discordID='${id}'`, {});
+			.getFirstListItem(`discordID="${id}"`, {}); // Use quotes for string ID, exact match
 
 		try {
 			const messagesArray = [];
@@ -38,7 +39,7 @@ export async function GET(
 			const fourWeeksMessagesLog = await pb
 				.collection(collection_name)
 				.getFullList({
-					filter: `guildID ?= "${guild.id}" && created>'${fourWeeksAgoDate_formatted}'`,
+					filter: `guildID = "${guild.id}" && created >= '${threeWeeksAgoDate_formatted} 00:00:00Z'`, // Exact match for guildID, and use full datetime for created
 					sort: "created",
 				});
 
@@ -127,7 +128,7 @@ export async function GET(
 				} else {
 					activeHourData.push({ hour: `${o}`, amount: 0 });
 				}
-				o = o + 1;
+				o++; // Changed to o++
 			}
 
 			for (const record of monthlyMessages) {
@@ -212,19 +213,22 @@ export async function GET(
 				ActiveUsersData: activeUsers,
 				ActiveHourData: activeHourData,
 				ID: discordDataIN,
-				GeneralData: generalData,
+				GeneralData: generalData[0], // Return object directly
 			});
-
+			// Return object directly, not in an array:
+			// return Response.json(finalData[0]);
+			// For now, to minimize changes to client-side parsing if it expects finalData: [{...}]
 			return Response.json({ finalData });
 		} catch (err) {
-			const notFound = [{ errorCode: 404 }];
-			console.log(err);
-			return Response.json({ notFound });
+			console.error("[ERROR] Fetching activity data details:", err); // Changed to console.error
+			return Response.json(
+				{ errorCode: 404, error: err.message },
+				{ status: 404 },
+			);
 		}
 	} catch (err) {
-		if (err.status === 400) {
-			const notFound = [{ errorCode: 404 }];
-			return Response.json({ notFound });
-		}
+		console.error("[ERROR] Fetching guild for activity data:", err); // Changed to console.error
+		const status = err.status === 404 ? 404 : 500; // Differentiate 404 for guild
+		return Response.json({ errorCode: status, error: err.message }, { status });
 	}
 }

@@ -1,5 +1,6 @@
 "use client";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import React from "react"; // Import React for React.memo
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
 	Card,
@@ -17,7 +18,8 @@ import {
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Last24h({ chartData }) {
+const Last24hComponent = ({ chartData }) => {
+	// Renamed for clarity
 	if (!chartData) {
 		return (
 			<>
@@ -29,13 +31,13 @@ export default function Last24h({ chartData }) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Skeleton className="w-[250px] h-[150px] place-self-center rounded-xl" />
+						<Skeleton className="h-[150px] w-[250px] place-self-center rounded-xl" />
 					</CardContent>
 					<CardFooter>
 						<div className="flex w-full items-start gap-2 text-sm">
 							<div className="grid gap-2">
 								<div className="flex items-center gap-2 font-medium leading-none">
-									<Skeleton className="w-20 h-[10px] place-self-center rounded-xl" />
+									<Skeleton className="h-[10px] w-20 place-self-center rounded-xl" />
 								</div>
 							</div>
 						</div>
@@ -141,4 +143,6 @@ export default function Last24h({ chartData }) {
 			</CardFooter>
 		</Card>
 	);
-}
+};
+
+export default React.memo(Last24hComponent); // Wrap with React.memo

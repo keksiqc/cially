@@ -1,5 +1,4 @@
-import { describe } from "node:test";
-import PocketBase from "pocketbase";
+import PocketBase from "pocketbase"; // describe import removed
 
 // Pocketbase Initialization
 const url = process.env.POCKETBASE_URL;
@@ -20,26 +19,31 @@ export async function GET(
 		);
 		const data = await API_REQ.json();
 		const code = data.code;
-		const date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${new Date().getUTCDate().toString().padStart(2, "0")}`;
-		const previous_date = `${new Date().getUTCFullYear()}-${(new Date().getUTCMonth() + 1).toString().padStart(2, "0")}-${(new Date().getUTCDate() - 1).toString().padStart(2, "0")}`;
+
+		const today = new Date();
+		const date = today.toISOString().slice(0, 10); // YYYY-MM-DD
+
+		const yesterday = new Date(today);
+		yesterday.setUTCDate(today.getUTCDate() - 1);
+		const previous_date = yesterday.toISOString().slice(0, 10); // YYYY-MM-DD
 
 		if (code === "success") {
 			try {
 				const guild = await pb
 					.collection(guild_collection_name)
-					.getFirstListItem(`discordID='${id}'`, {});
+					.getFirstListItem(`discordID="${id}"`, {}); // Use quotes for string ID, exact match
 
 				const today_msg_records = await pb
 					.collection(message_collection_name)
 					.getFullList({
-						filter: `guildID ?= "${guild.id}" && created>'${date}'`,
+						filter: `guildID = "${guild.id}" && created >= '${date} 00:00:00Z'`, // Exact match and full datetime
 						sort: "created",
 					});
 
 				const yesterday_msg_records = await pb
 					.collection(message_collection_name)
 					.getFullList({
-						filter: `guildID ?= "${guild.id}" && created>'${previous_date}' && created<'${date}'`,
+						filter: `guildID = "${guild.id}" && created >= '${previous_date} 00:00:00Z' && created < '${date} 00:00:00Z'`, // Exact match and full datetime range
 						sort: "created",
 					});
 
@@ -67,19 +71,32 @@ export async function GET(
 					},
 				];
 				return Response.json({ guildFound });
-			} catch (err) {
-				if (err.status === 400) {
-					const notFound = [{ errorCode: 404 }];
-					return Response.json({ notFound });
-				}
+			} catch (dbErr) {
+				console.error(`[ERROR] DB error in fetchGuild for ID ${id}:`, dbErr);
+				const status = dbErr.status === 404 ? 404 : 500;
+				return Response.json(
+					{ errorCode: status, error: dbErr.message },
+					{ status },
+				);
 			}
 		} else {
-			const notFound = [{ errorCode: 404 }];
-			return Response.json({ notFound });
+			// This 'else' means the /syncGuild call itself did not return "success"
+			console.warn(
+				`[WARN] /syncGuild for ${id} did not return success. Code: ${code}`,
+			);
+			return Response.json(
+				{ errorCode: 502, error: "Failed to sync guild with bot API." },
+				{ status: 502 },
+			);
 		}
-	} catch (err) {
-		console.log(err);
-		const notFound = [{ errorCode: 404 }];
-		return Response.json({ notFound });
+	} catch (fetchErr) {
+		console.error(
+			`[ERROR] Error fetching /syncGuild or processing its response for ID ${id}:`,
+			fetchErr,
+		);
+		return Response.json(
+			{ errorCode: 500, error: fetchErr.message },
+			{ status: 500 },
+		);
 	}
 }

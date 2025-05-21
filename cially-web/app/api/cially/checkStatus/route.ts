@@ -1,17 +1,21 @@
 import fetch from "node-fetch";
 
 // Main GET Event
-export async function GET(
-	request: Request,
-	{ params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: Request) {
+	// Removed unused params
 	try {
 		const response = [];
 
 		const controllerPocketbase = new AbortController();
 		const controllerDiscordBot = new AbortController();
-		const timeoutIdPocketbase = setTimeout(() => controllerPocketbase.abort(), 5000);
-		const timeoutIdDiscordBot = setTimeout(() => controllerDiscordBot.abort(), 5000);
+		const timeoutIdPocketbase = setTimeout(
+			() => controllerPocketbase.abort(),
+			5000,
+		);
+		const timeoutIdDiscordBot = setTimeout(
+			() => controllerDiscordBot.abort(),
+			5000,
+		);
 
 		try {
 			const pocketbase_response = await fetch(
@@ -21,7 +25,7 @@ export async function GET(
 			clearTimeout(timeoutIdPocketbase);
 			response.push({ pocketbase: "online" });
 		} catch (err) {
-			console.log(err);
+			console.error(err); // Changed to console.error
 
 			response.push({ pocketbase: "offline" });
 		}
@@ -34,7 +38,7 @@ export async function GET(
 			clearTimeout(timeoutIdDiscordBot);
 			response.push({ bot: "online" });
 		} catch (err) {
-			console.log(err);
+			console.error(err); // Changed to console.error
 			response.push({ bot: "offline" });
 		}
 

@@ -6,18 +6,29 @@ const url = process.env.POCKETBASE_URL;
 
 // Pocketbase Initialization
 const pb = new PocketBase(url);
-let guild_collection_name = process.env.GUILDS_COLLECTION;
+const guild_collection_name = process.env.GUILDS_COLLECTION; // Changed to const
 
 export default async function registerGuild(guildID) {
-	console.log("[DEBUG] Guild is not in the database. Attempting to add it...");
+	console.debug(
+		"[DEBUG] Guild is not in the database. Attempting to add it...",
+	); // Changed to console.debug
 	const guildData = { discordID: guildID };
 	try {
 		const newGuild = await pb
 			.collection(guild_collection_name)
 			.create(guildData);
-		console.log("[DEBUG] Guild has been added to the database");
-		fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${guildID}`);
+		console.debug("[DEBUG] Guild has been added to the database"); // Changed to console.debug
+		fetch(`${process.env.NEXT_PUBLIC_BOT_API_URL}/syncGuild/${guildID}`).catch(
+			(err) =>
+				console.error(
+					`[ERROR] Failed to trigger /syncGuild for ${guildID}:`,
+					err,
+				),
+		); // Added catch for fetch
 	} catch (error) {
-		console.log(`\n[DEBUG] Failed to create new guild: \n${error}`);
+		console.error(
+			`[ERROR] Failed to create new guild ${guildID} in DB:`,
+			error,
+		); // Changed to console.error
 	}
 }

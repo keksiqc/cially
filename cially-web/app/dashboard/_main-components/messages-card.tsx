@@ -1,4 +1,5 @@
 import { MessageCircle } from "lucide-react";
+import React from "react"; // Import React for React.memo
 import {
 	Card,
 	CardDescription,
@@ -6,7 +7,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-export default function MessagesBlock({ guild }) {
+const MessagesBlockComponent = ({ guild }) => {
+	// Renamed for clarity
 	// let correct_msg_difference = (guild.msg_day_difference > 0) ? `+${guild.msg_day_difference} messages than yesterday`
 
 	return (
@@ -39,4 +41,6 @@ export default function MessagesBlock({ guild }) {
 			</Card>
 		</>
 	);
-}
+};
+
+export default React.memo(MessagesBlockComponent); // Wrap with React.memo

@@ -1,7 +1,6 @@
+import React from "react"; // Import React for React.memo
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-	Card
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
 	Tooltip,
 	TooltipContent,
@@ -9,7 +8,10 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export default function BottomCard({ guild }) {
+const BottomCardComponent = ({ guild }) => {
+	// Renamed to avoid conflict with default export if any, and for clarity
+	// Derivations are simple, memoizing them with useMemo is likely not necessary
+	// if the parent component ensures 'guild' prop stability or if BottomCard is memoized.
 	let correct_date =
 		guild.creation_date.slice(0, 4) +
 		"/" +
@@ -99,4 +101,6 @@ export default function BottomCard({ guild }) {
 			</Card>
 		</>
 	);
-}
+};
+
+export default React.memo(BottomCardComponent); // Wrap with React.memo

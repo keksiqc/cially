@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export default function GuildNotFound() {
@@ -7,7 +8,12 @@ export default function GuildNotFound() {
 				Guild not Found
 			</div>
 			<div className="w-[30vh] place-self-center sm:w-[70vh]">
-				<img src="/404.svg"></img>
+				<Image
+					src="/404.svg"
+					alt="Guild not found illustration"
+					width={300}
+					height={300}
+				/>
 			</div>
 			<div className="place-self-center">
 				<a href="/">

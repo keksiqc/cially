@@ -1,4 +1,5 @@
 import { UsersRound } from "lucide-react";
+import React from "react"; // Import React for React.memo
 import {
 	Card,
 	CardDescription,
@@ -6,7 +7,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-export default function MemberBlock({ guild }) {
+const MemberBlockComponent = ({ guild }) => {
+	// Renamed for clarity
 	return (
 		<>
 			<Card className="">
@@ -25,4 +27,6 @@ export default function MemberBlock({ guild }) {
 			</Card>
 		</>
 	);
-}
+};
+
+export default React.memo(MemberBlockComponent); // Wrap with React.memo

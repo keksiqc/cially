@@ -13,15 +13,16 @@ export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
-	const fourWeeksAgoDate = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
-	const fourWeeksAgoDate_formatted = `${fourWeeksAgoDate.getUTCFullYear()}-${(fourWeeksAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${fourWeeksAgoDate.getUTCDate().toString().padStart(2, "0")}`;
+	const threeWeeksAgo = new Date();
+	threeWeeksAgo.setUTCDate(threeWeeksAgo.getUTCDate() - 21);
+	const threeWeeksAgoDate_formatted = threeWeeksAgo.toISOString().slice(0, 10); // YYYY-MM-DD for >= filter
 
 	const { id } = await params;
 
 	try {
 		const guild = await pb
 			.collection(guild_collection_name)
-			.getFirstListItem(`discordID='${id}'`, {});
+			.getFirstListItem(`discordID="${id}"`, {}); // Use quotes for string ID, exact match
 
 		try {
 			const messagesArray = [];
@@ -29,185 +30,155 @@ export async function GET(
 			const fourWeeksMessagesLog = await pb
 				.collection(collection_name)
 				.getFullList({
-					filter: `guildID ?= "${guild.id}" && created>'${fourWeeksAgoDate_formatted}'`,
+					filter: `guildID = "${guild.id}" && created >= '${threeWeeksAgoDate_formatted} 00:00:00Z'`, // Exact match for guildID
 					sort: "created",
 				});
 
 			for (const message of fourWeeksMessagesLog) {
-				let creation_date = String(message.created).slice(0, 19);
-				let creation_date_js = new Date(
-					Date.UTC(
-						Number.parseInt(creation_date.slice(0, 4)),
-						Number.parseInt(creation_date.slice(5, 7)) - 1,
-						Number.parseInt(creation_date.slice(8, 10)),
-					),
-				);
-
-				const creation_date_js_ms = creation_date_js.getTime();
-
+				const creationDate = new Date(message.created); // PocketBase dates are usually ISO strings
 				messagesArray.push({
 					message_id: message.id,
 					author: message.author,
 					channelID: `${message.channelID}`,
-					created: creation_date_js_ms,
-					created_formatted: creation_date,
+					created: creationDate.getTime(), // Store as timestamp
+					created_formatted: message.created, // Keep original ISO string for hour/date part extraction
 				});
 			}
 
-			const todayMessages = [];
-			const todayDate = new Date();
-			const todayDateUTC = new Date(
-				Date.UTC(
-					todayDate.getUTCFullYear(),
-					todayDate.getUTCMonth(),
-					todayDate.getUTCDate(),
-				),
+			const today = new Date();
+			const startOfToday_ms = Date.UTC(
+				today.getUTCFullYear(),
+				today.getUTCMonth(),
+				today.getUTCDate(),
 			);
-			const todayDate_ms = todayDateUTC.getTime();
+			const endOfToday_ms = startOfToday_ms + 24 * 60 * 60 * 1000 - 1; // End of today UTC
 
-			for (const message of messagesArray) {
-				if (message.created === todayDate_ms) {
-					todayMessages.push({
-						message_id: message.id,
-						author: message.author,
-						channelID: `${message.channelID}`,
-						created: message.created,
-						created_formatted: message.created_formatted,
-					});
-				}
-			}
+			const todayMessages = messagesArray.filter(
+				(message) =>
+					message.created >= startOfToday_ms &&
+					message.created <= endOfToday_ms,
+			);
+
+			// Initialize hourData locally
+			const localHourData = Array.from({ length: 24 }, (_, i) => ({
+				hour: i.toString().padStart(2, "0"),
+				amount: 0,
+			}));
 
 			for (const record of todayMessages) {
-				const minutes = [record.created_formatted.slice(11, 13)];
-				for (const minute of minutes) {
-					const position = hourData.findIndex((item) => item.hour === minute);
-					if (position !== -1) {
-						hourData[position].amount = hourData[position].amount + 1;
-					} else {
-						hourData.push({ hour: minute, amount: 1 });
-					}
+				const hour = new Date(record.created_formatted)
+					.getUTCHours()
+					.toString()
+					.padStart(2, "0");
+				const position = localHourData.findIndex((item) => item.hour === hour);
+				if (position !== -1) {
+					localHourData[position].amount++;
 				}
+				// No else needed if all hours 00-23 are pre-initialized
 			}
+			// localHourData is already sorted by hour due to initialization.
 
-			hourData.sort((a, b) => a.hour - b.hour);
+			const oneMonthAgo = new Date();
+			oneMonthAgo.setUTCMonth(oneMonthAgo.getUTCMonth() - 1);
+			const oneMonthAgo_ms = oneMonthAgo.getTime();
 
-			const monthlyMessages = [];
-			const LastWeekDateUTC = new Date(
-				Date.UTC(
-					todayDate.getUTCFullYear(),
-					todayDate.getUTCMonth() - 1,
-					todayDate.getUTCDate(),
-				),
+			const monthlyMessages = messagesArray.filter(
+				(message) => message.created >= oneMonthAgo_ms,
 			);
-			const LastWeekDateUTC_ms = LastWeekDateUTC.getTime();
-
-			for (const message of messagesArray) {
-				if (message.created >= LastWeekDateUTC_ms) {
-					monthlyMessages.push({
-						message_id: message.id,
-						author: message.author,
-						channelID: `${message.channelID}`,
-						created: message.created,
-						created_formatted: message.created_formatted,
-					});
-				}
-			}
 
 			let weekData = [];
-
-			let u = 0;
-
-			while (u < 8) {
-				const uDaysAgoDate = new Date(Date.now() - u * 24 * 60 * 60 * 1000);
+			for (let u = 0; u < 7; u++) {
+				// Corrected loop for last 7 days (0-6)
+				const uDaysAgoDate = new Date();
+				uDaysAgoDate.setUTCDate(today.getUTCDate() - u);
 				const uDaysAgoDate_formatted = `${(uDaysAgoDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${uDaysAgoDate.getUTCDate().toString().padStart(2, "0")}`;
-				weekData.push({ date: `${uDaysAgoDate_formatted}`, amount: 0 });
-				u = u + 1;
+				weekData.push({ date: uDaysAgoDate_formatted, amount: 0 });
 			}
 
 			for (const record of monthlyMessages) {
-				const monthly_msgs = [record.created_formatted.slice(5, 10)];
-				for (const monthly_msg of monthly_msgs) {
-					const position = weekData.findIndex(
-						(item) => item.date === monthly_msg,
-					);
-					if (position !== -1) {
-						weekData[position].amount = weekData[position].amount + 1;
-					}
+				// Should filter for last 7 days of messages for weekData
+				const messageDate = new Date(record.created);
+				const messageDate_formatted = `${(messageDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${messageDate.getUTCDate().toString().padStart(2, "0")}`;
+				const position = weekData.findIndex(
+					(item) => item.date === messageDate_formatted,
+				);
+				if (position !== -1) {
+					weekData[position].amount++;
 				}
 			}
-			weekData = weekData.toReversed();
+			weekData = weekData.reverse(); // To have oldest to newest
 
-			console.log("oioioi");
+			// console.log("oioioi"); // Removed
 
 			let fourWeekData = [];
+			for (let w = 0; w < 4; w++) {
+				// Iterate 4 times for 4 weeks
+				const weekStartDate = new Date();
+				weekStartDate.setUTCDate(today.getUTCDate() - w * 7 - 6); // Start of the week (e.g., Sunday/Monday)
+				weekStartDate.setUTCHours(0, 0, 0, 0);
 
-			let w = 0;
-			while (w < 22) {
-				const startingDate = new Date(Date.now() - w * 24 * 60 * 60 * 1000);
-				const startingDate_formatted = `${startingDate.getUTCFullYear().toString().padStart(2, "0")}-${(startingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${startingDate.getUTCDate().toString().padStart(2, "0")}`;
-				const startingDate_ms = startingDate.getTime();
-				const startingDate_factor = startingDate.toLocaleDateString("en-US", {
+				const weekEndDate = new Date();
+				weekEndDate.setUTCDate(today.getUTCDate() - w * 7);
+				weekEndDate.setUTCHours(23, 59, 59, 999);
+
+				const weekStart_ms = weekStartDate.getTime();
+				const weekEnd_ms = weekEndDate.getTime();
+
+				const weekFactor = weekStartDate.toLocaleDateString("en-US", {
 					month: "short",
 					day: "numeric",
 				});
 
-				const endingDate = new Date(Date.now() - (7 + w) * 24 * 60 * 60 * 1000);
-				const endingDate_formatted = `${endingDate.getUTCFullYear().toString().padStart(2, "0")}-${(endingDate.getUTCMonth() + 1).toString().padStart(2, "0")}-${endingDate.getUTCDate().toString().padStart(2, "0")}`;
-				const endingDate_ms = endingDate.getTime();
-
 				fourWeekData.push({
-					factor: `${startingDate_factor}`,
-					starting_date: { startingDate_formatted, startingDate_ms },
-					finishing_date: { endingDate_formatted, endingDate_ms },
+					factor: weekFactor,
+					starting_date_ms: weekStart_ms,
+					finishing_date_ms: weekEnd_ms,
 					amount: 0,
 				});
-				w = w + 7;
 			}
+			fourWeekData.reverse(); // Oldest week first
 
 			for (const record of monthlyMessages) {
-				const creation_date = new Date(record.created_formatted.slice(0, 10));
-				const creation_date_ms = creation_date.getTime();
+				// Use all messages from last month for this
 				const position = fourWeekData.findIndex(
 					(item) =>
-						item.starting_date.startingDate_ms >= creation_date_ms &&
-						item.finishing_date.endingDate_ms <= creation_date_ms,
+						record.created >= item.starting_date_ms &&
+						record.created <= item.finishing_date_ms,
 				);
 				if (position !== -1) {
-					fourWeekData[position].amount = fourWeekData[position].amount + 1;
-				} else {
-					return;
+					fourWeekData[position].amount++;
 				}
+				// Removed 'else { return; }' as it was incorrect logic
 			}
-			fourWeekData = fourWeekData.toReversed();
+			// fourWeekData = fourWeekData.toReversed(); // Already reversed for oldest first
 
-			const generalDataArray = [];
-			generalDataArray.push({
+			const generalDataArray = {
+				// Changed to object
 				total_messages: guild.total_messages,
 				message_deletions: guild.message_deletions,
 				message_edits: guild.message_edits,
 				total_attachments: guild.total_attachments,
-			});
+			};
 
-			const finalData = [];
-			finalData.push({
-				HourData: hourData,
+			const finalData = {
+				// Changed to object
+				HourData: localHourData, // Use localHourData
 				WeekData: weekData,
 				FourWeekData: fourWeekData,
 				GeneralData: generalDataArray,
-			});
+			};
 
-			return Response.json({ finalData });
+			return Response.json(finalData); // Return the object directly
 		} catch (err) {
-			const notFound = [{ errorCode: 404 }];
-			console.log(err);
-			return Response.json({ notFound });
+			console.error("[ERROR] Fetching message data details:", err);
+			return Response.json(
+				{ errorCode: 404, error: err.message },
+				{ status: 404 },
+			);
 		}
 	} catch (err) {
-		if (err.status === 400) {
-			const notFound = [{ errorCode: 404 }];
-			console.log(err);
-
-			return Response.json({ notFound });
-		}
+		console.error("[ERROR] Fetching guild for message data:", err);
+		const status = err.status === 404 ? 404 : 500;
+		return Response.json({ errorCode: status, error: err.message }, { status });
 	}
 }

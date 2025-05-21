@@ -1,6 +1,5 @@
 // Imports
 const { Events, MessageFlags } = require("discord.js");
-const { debug } = require("../terminal/debug");
 const { error } = require("../terminal/error");
 
 // Event
@@ -20,18 +19,20 @@ module.exports = {
 
 		try {
 			await command.execute(interaction);
-		} catch (error) {
-			console.error(error);
+		} catch (err) {
+			error({
+				text: `Error executing command ${interaction.commandName}: ${err.message}`,
+			});
+			// console.error(err); // Optionally log the full error object for more details
+
+			const errorMessagePayload = {
+				content: "There was an error while executing this command!",
+				flags: MessageFlags.Ephemeral,
+			};
 			if (interaction.replied || interaction.deferred) {
-				await interaction.followUp({
-					content: "There was an error while executing this command!",
-					flags: MessageFlags.Ephemeral,
-				});
+				await interaction.followUp(errorMessagePayload);
 			} else {
-				await interaction.reply({
-					content: "There was an error while executing this command!",
-					flags: MessageFlags.Ephemeral,
-				});
+				await interaction.reply(errorMessagePayload);
 			}
 		}
 	},

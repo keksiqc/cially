@@ -3,14 +3,15 @@
 @import "tw-animate-css";
 
 body {
-	font-family: "Outfit", Aral;
+	font-family: "Outfit", Arial, sans-serif; /* Changed Aral to Arial */
 	margin: 0;
 	padding: 0;
 }
 
 @custom-variant dark (&:is(.dark *));
 
-.bg-gr {
+.bg-main-gradient {
+	/* Renamed .bg-gr to .bg-main-gradient */
 	background: #071b4d;
 	background: radial-gradient(
 		at 20% 25%,
@@ -20,13 +21,11 @@ body {
 	);
 }
 
-
-
 @theme inline {
 	--color-background: hsl(var(--background));
 	--color-foreground: hsl(var(--foreground));
-	--font-sans: hsl(var(--font-geist-sans));
-	--font-mono: hsl(var(--font-geist-mono));
+	/* --font-sans: hsl(var(--font-geist-sans)); */ /* Commented out Geist font */
+	/* --font-mono: hsl(var(--font-geist-mono)); */ /* Commented out Geist font */
 	--color-sidebar-ring: hsl(var(--sidebar-ring));
 	--color-sidebar-border: hsl(var(--sidebar-border));
 	--color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
@@ -64,6 +63,7 @@ body {
 
 @layer base {
 	:root {
+		/* General variables */
 		--background: 0 0% 100%;
 		--foreground: 222.2 84% 4.9%;
 		--card: 0 0% 100%;
@@ -89,9 +89,23 @@ body {
 		--chart-3: 197 37% 24%;
 		--chart-4: 43 74% 66%;
 		--chart-5: 27 87% 67%;
+
+		/* Sidebar variables */
+		--sidebar: hsl(0 0% 98%);
+		--sidebar-foreground: hsl(240 5.3% 26.1%);
+		--sidebar-primary: hsl(240 5.9% 10%);
+		--sidebar-primary-foreground: hsl(0 0% 98%);
+		--sidebar-accent: hsl(240 4.8% 95.9%);
+		--sidebar-accent-foreground: hsl(240 5.9% 10%);
+		--sidebar-border: hsl(220 13% 91%);
+		--sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+		/* Shadcn/UI component variables moved into single :root */
+		--sidebar-background: 0 0% 98%; /* Duplicates --sidebar but used by Shadcn component */
 	}
 
 	.dark {
+		/* General dark variables */
 		--background: 222.2 34% 4.9%;
 		--foreground: 210 40% 98%;
 		--card: 222.2 40% 4.9%;
@@ -116,34 +130,22 @@ body {
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
-	}
-}
 
-@layer base {
-	:root {
-		--sidebar-background: 0 0% 98%;
-		--sidebar-foreground: 240 5.3% 26.1%;
-		--sidebar-primary: 240 5.9% 10%;
-		--sidebar-primary-foreground: 0 0% 98%;
-		--sidebar-accent: 240 4.8% 95.9%;
-		--sidebar-accent-foreground: 240 5.9% 10%;
-		--sidebar-border: 220 13% 91%;
-		--sidebar-ring: 217.2 91.2% 59.8%;
+		/* Sidebar dark variables */
+		--sidebar: hsl(240 5.9% 10%);
+		--sidebar-foreground: hsl(240 4.8% 95.9%);
+		--sidebar-primary: hsl(224.3 76.3% 48%);
+		--sidebar-primary-foreground: hsl(0 0% 100%);
+		--sidebar-accent: hsl(240 3.7% 15.9%);
+		--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+		--sidebar-border: hsl(240 3.7% 15.9%);
+		--sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+		/* Shadcn/UI component dark variables moved into single .dark */
+		--sidebar-background: 240 5.9% 10%; /* Duplicates --sidebar but used by Shadcn component */
 	}
 
-	.dark {
-		--sidebar-background: 240 5.9% 10%;
-		--sidebar-foreground: 240 4.8% 95.9%;
-		--sidebar-primary: 224.3 76.3% 48%;
-		--sidebar-primary-foreground: 0 0% 100%;
-		--sidebar-accent: 240 3.7% 15.9%;
-		--sidebar-accent-foreground: 240 4.8% 95.9%;
-		--sidebar-border: 240 3.7% 15.9%;
-		--sidebar-ring: 217.2 91.2% 59.8%;
-	}
-}
-
-@layer base {
+	/* Base styles for elements */
 	* {
 		@apply border-border outline-ring/50;
 	}
@@ -152,30 +154,12 @@ body {
 	}
 }
 
-:root {
-	--sidebar: hsl(0 0% 98%);
-	--sidebar-foreground: hsl(240 5.3% 26.1%);
-	--sidebar-primary: hsl(240 5.9% 10%);
-	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: hsl(240 4.8% 95.9%);
-	--sidebar-accent-foreground: hsl(240 5.9% 10%);
-	--sidebar-border: hsl(220 13% 91%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
-.dark {
-	--sidebar: hsl(240 5.9% 10%);
-	--sidebar-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-primary: hsl(224.3 76.3% 48%);
-	--sidebar-primary-foreground: hsl(0 0% 100%);
-	--sidebar-accent: hsl(240 3.7% 15.9%);
-	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-border: hsl(240 3.7% 15.9%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
+/* Removed redundant :root and .dark blocks that were defining --sidebar variables again */
+/* Removed redundant @layer base block */
 
 .outfit {
-	font-family: "Outfit", sans-serif;
+	/* This class is defined but not used in the provided files. Keeping it for now. */
+	font-family: "Outfit", sans-serif; /* Ensures sans-serif fallback for Outfit */
 	font-optical-sizing: auto;
 	font-style: normal;
 }

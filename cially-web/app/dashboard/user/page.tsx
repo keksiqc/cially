@@ -1,21 +1,20 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
-	FormMessage
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import LoadingUserCard from "./_components/loading-usercard";
-
 
 const formSchema = z.object({
 	id: z.string().min(5, {
@@ -23,14 +22,25 @@ const formSchema = z.object({
 	}),
 });
 
+import dynamic from "next/dynamic"; // Import next/dynamic
 import { Suspense, useState } from "react";
-import DynamicUserCard from "./_components/dynamic-usercard";
 import ErrorUserCard from "./_components/error-usercard";
 import StaticUserCard from "./_components/static-usercard";
+
+// Dynamically import components
+const DynamicUserCard = dynamic(
+	() => import("./_components/dynamic-usercard"),
+	{
+		ssr: false,
+		loading: () => <LoadingUserCard />, // Use existing LoadingUserCard
+	},
+);
 
 export default function UserSearchPage() {
 	return (
 		<Suspense>
+			{" "}
+			{/* Suspense is already here */}
 			<ClientComponent />
 		</Suspense>
 	);
@@ -39,7 +49,10 @@ export default function UserSearchPage() {
 function ClientComponent() {
 	const searchParams = useSearchParams();
 	const guildID = searchParams.get("guildID");
-	const [userData, setUserData] = useState([{ loading: false }]);
+	// Initial state: null for data, false for loading, null for error message
+	const [userData, setUserData] = useState<any | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [fetchError, setFetchError] = useState<string | null>(null);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -49,16 +62,37 @@ function ClientComponent() {
 	});
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(userData);
+		setIsLoading(true);
+		setFetchError(null);
+		setUserData(null); // Clear previous user data
 
-		setUserData([{ loading: true }]);
-		const InputData = Array(values)[0].id;
+		const inputID = values.id; // Simplified input data access
 
-		const DataReceived = await fetch(
-			`/api/server/${guildID}/fetchUserData/${InputData}`,
-		);
-		const json = await DataReceived.json();
-		setUserData(Array(json));
+		try {
+			const dataReceived = await fetch(
+				`/api/server/${guildID}/fetchUserData/${inputID}`,
+			);
+			const json = await dataReceived.json();
+			if (json.error || (Array.isArray(json) && json[0]?.errorCode === 404)) {
+				// Check for error response from API
+				setFetchError("User not found or error fetching data.");
+				setUserData(null);
+			} else {
+				// Assuming API returns the user data directly or in a specific structure
+				// If json is already the array like [{userID: ...}], then just setUserData(json)
+				// If json is like { finalData: [...] }, then setUserData(json.finalData)
+				// For now, assuming json is the direct user data or array containing it.
+				// The previous logic `setUserData(Array(json))` was problematic.
+				// If API returns an array like `[{...user_data...}]`
+				setUserData(json);
+			}
+		} catch (err) {
+			console.error("onSubmit error:", err);
+			setFetchError("An unexpected error occurred.");
+			setUserData(null);
+		} finally {
+			setIsLoading(false);
+		}
 	}
 
 	function Header() {
@@ -68,8 +102,8 @@ function ClientComponent() {
 				<div className=" ml-10 text-sm text-white/50">
 					Get details regarding any user in your Discord Server
 				</div>
-				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh" />
-
+				<hr className="mt-2 mr-5 ml-5 w-[200px] sm:w-full" />{" "}
+				{/* Adjusted width */}
 				<div className="mx-5 mt-5">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
@@ -83,16 +117,13 @@ function ClientComponent() {
 												<Input
 													placeholder="User ID"
 													{...field}
-													className="peer pr-24" 
+													className="peer pr-24"
 												/>
 											</FormControl>
 
 											<Button
 												type="submit"
-												className="absolute top-1/2 right-2 -translate-y-1/2 h-8 px-3 text-sm
-                         opacity-0 translate-x-2 scale-95
-                         transition-all duration-300 ease-in-out
-                         peer-focus:opacity-100 peer-focus:translate-x-0 peer-focus:scale-100 rounded-full bg-transparent hover:bg-white/5"
+												className="-translate-y-1/2 absolute top-1/2 right-2 h-8 translate-x-2 scale-95 rounded-full bg-transparent px-3 text-sm opacity-0 transition-all duration-300 ease-in-out hover:bg-white/5 peer-focus:translate-x-0 peer-focus:scale-100 peer-focus:opacity-100"
 											>
 												<Search className="text-white" />
 											</Button>
@@ -108,22 +139,23 @@ function ClientComponent() {
 		);
 	}
 
-	if (userData[0].loading === true) {
+	if (isLoading) {
 		return (
 			<>
+				<Header />
 				<LoadingUserCard />
 			</>
 		);
 	}
-	if (userData[0].loading === false) {
-		return (
-			<>
-				<Header />
-				<StaticUserCard />
-			</>
-		);
-	}
-	if (userData[0].userID) {
+	// Check if userData is an array and has content (userID is a property in the actual data)
+	// The API might return an array like `[{...userData...}]` or an object directly.
+	// Previous logic `userData[0].userID` suggests it expects an array.
+	if (
+		userData &&
+		Array.isArray(userData) &&
+		userData.length > 0 &&
+		userData[0].userID
+	) {
 		return (
 			<>
 				<Header />
@@ -131,12 +163,22 @@ function ClientComponent() {
 			</>
 		);
 	}
+	// If there was an error OR if userData is null/empty after trying to fetch (and not loading)
+	if (fetchError || !userData) {
+		// Show StaticUserCard by default if no search made yet, or ErrorUserCard if fetchError exists
+		return (
+			<>
+				<Header />
+				{fetchError ? <ErrorUserCard /> : <StaticUserCard />}
+			</>
+		);
+	}
+
+	// Fallback, though ideally covered by above conditions
 	return (
 		<>
 			<Header />
-			<ErrorUserCard />
+			<StaticUserCard />
 		</>
 	);
-
-	
 }

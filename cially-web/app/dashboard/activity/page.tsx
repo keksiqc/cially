@@ -1,18 +1,41 @@
 "use client";
 
-import GuildNotFound from "@/app/_components/_events/guildNotFound";
+import dynamic from "next/dynamic"; // Import next/dynamic
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import ActiveChannels from "../activity/_components/active_channels";
-import ActiveHours from "../activity/_components/active_hours";
-import ActiveUsers from "../activity/_components/active_users";
-import GeneralActivityData from "./_components/general_data";
+import { Suspense, useEffect, useState } from "react"; // Added Suspense to imports
+import GuildNotFound from "@/app/_components/_events/guildNotFound";
 
-
+// Dynamically import components
+const ActiveChannels = dynamic(
+	() => import("../activity/_components/active_channels"),
+	{
+		ssr: false,
+		loading: () => <p>Loading active channels chart...</p>,
+	},
+);
+const ActiveHours = dynamic(
+	() => import("../activity/_components/active_hours"),
+	{
+		ssr: false,
+		loading: () => <p>Loading active hours chart...</p>,
+	},
+);
+const ActiveUsers = dynamic(
+	() => import("../activity/_components/active_users"),
+	{
+		ssr: false,
+		loading: () => <p>Loading active users chart...</p>,
+	},
+);
+const GeneralActivityData = dynamic(
+	() => import("./_components/general_data"),
+	{
+		ssr: false,
+		loading: () => <p>Loading general data...</p>,
+	},
+);
 
 // FIXME Error when there are no messages
-
-import { Suspense } from "react";
 
 export default function MessagesDashboard() {
 	return (
@@ -25,7 +48,7 @@ export default function MessagesDashboard() {
 function ClientComponent() {
 	const searchParams = useSearchParams();
 	const guildID = searchParams.get("guildID");
-	const [chartData, setChartData] = useState([{ amount: 69 }]);
+	const [chartData, setChartData] = useState<any | null>(null); // Changed initial state to null
 
 	useEffect(() => {
 		async function fetchData() {
@@ -39,55 +62,77 @@ function ClientComponent() {
 		fetchData();
 	}, [guildID]);
 
-	if (chartData.notFound) {
+	if (chartData?.notFound) {
+		// Added optional chaining
 		return <GuildNotFound />;
 	}
 
-	if (!chartData.finalData) {
+	// Show skeleton or loading state if chartData or finalData is not yet available
+	if (!chartData || !chartData.finalData) {
 		return (
 			<>
 				<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
-				<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh" />
-
+				<hr className="mt-2 mr-5 ml-5 w-[200px] sm:w-full" />{" "}
+				{/* w-50 to w-[200px], sm:w-dvh to sm:w-full */}
 				<div className="h-[90%]">
-					<div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
+					{/* Using fractional widths as an example, or could use more specific % or rem values */}
+					<div className="mt-10 mr-5 ml-10 grid w-2/5 grid-cols-1 gap-5 sm:w-5/6 sm:grid-cols-2">
 						<div>
-							<ActiveChannels />
+							<ActiveChannels chartData={null} />{" "}
+							{/* Pass null or empty for skeleton state */}
 						</div>
 						<div>
-							<ActiveUsers />
+							<ActiveUsers chartData={null} />{" "}
+							{/* Pass null or empty for skeleton state */}
 						</div>
 					</div>
 
-					<div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
-						<ActiveHours />
-
+					<div className="mt-5 mr-5 ml-10 w-2/5 sm:w-5/6">
+						<ActiveHours chartData={null} />{" "}
+						{/* Pass null or empty for skeleton state */}
 						<div className="mt-5">
-							<GeneralActivityData />
+							<GeneralActivityData chartData={null} />{" "}
+							{/* Pass null or empty for skeleton state */}
 						</div>
 					</div>
 				</div>
-
 				<div className="mt-5 pb-5 text-center text-gray-600 text-xs">
 					Thanks for using Cially Dashboard!
 				</div>
 			</>
-		)
+		);
 	}
 
+	// Ensure finalData[0] exists before trying to access its properties
+	const finalDataContent = chartData.finalData?.[0];
+	if (!finalDataContent) {
+		// This case handles if finalData is an empty array or structure is unexpected
+		// You might want to show a specific error or a more targeted skeleton here
+		return (
+			<>
+				<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
+				<hr className="mt-2 mr-5 ml-5 w-[200px] sm:w-full" />
+				<div className="p-4">Loading data or data is unavailable...</div>
+			</>
+		);
+	}
 
-	const data_channels = chartData.finalData[0].ChannelData;
-	const data_users = chartData.finalData[0].ActiveUsersData;
-	const data_hours = chartData.finalData[0].ActiveHourData;
-	const data_general = chartData.finalData[0].GeneralData;
+	const {
+		ChannelData: data_channels,
+		ActiveUsersData: data_users,
+		ActiveHourData: data_hours,
+		GeneralData: data_general,
+	} = finalDataContent;
 
 	return (
 		<>
 			<div className="mt-10 ml-10 text-2xl">Activity Analytics</div>
-			<hr className="mt-2 mr-5 ml-5 w-50 sm:w-dvh" />
-
+			<hr className="mt-2 mr-5 ml-5 w-[200px] sm:w-full" />{" "}
+			{/* w-50 to w-[200px], sm:w-dvh to sm:w-full */}
 			<div className="h-[90%]">
-				<div className="grid grid-cols-1 w-[40%] sm:w-[85%] sm:grid-cols-2 ml-10 mr-5 mt-10 gap-5">
+				<div className="mt-10 mr-5 ml-10 grid w-2/5 grid-cols-1 gap-5 sm:w-5/6 sm:grid-cols-2">
+					{" "}
+					{/* Fractional widths */}
 					<div>
 						<ActiveChannels chartData={data_channels} />
 					</div>
@@ -96,18 +141,18 @@ function ClientComponent() {
 					</div>
 				</div>
 
-				<div className="ml-10 mr-5 mt-5 w-[40%] sm:w-[85%]">
+				<div className="mt-5 mr-5 ml-10 w-2/5 sm:w-5/6">
+					{" "}
+					{/* Fractional widths */}
 					<ActiveHours chartData={data_hours} />
-
 					<div className="mt-5">
 						<GeneralActivityData chartData={data_general} />
 					</div>
 				</div>
 			</div>
-
 			<div className="mt-5 pb-5 text-center text-gray-600 text-xs">
 				Thanks for using Cially Dashboard!
 			</div>
 		</>
-	)
+	);
 }

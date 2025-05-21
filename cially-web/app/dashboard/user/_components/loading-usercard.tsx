@@ -1,26 +1,25 @@
 "use client";
 
-import {
-	Card,
-	CardContent,
-	CardHeader,
-} from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LoadingUserCard() {
 	return (
-		<div className="place-self-center w-full mt-10 ">
+		<div className="mt-10 w-full place-self-center ">
 			<Card className="mx-5">
 				<CardHeader>
 					<div className="grid grid-cols-2">
 						<div className="place-self-start">
 							<div className="grid grid-cols-2 gap-0">
-								<Avatar className="w-15 h-15">
+								<Avatar className="h-[60px] w-[60px]">
+									{" "}
+									{/* Adjusted size */}
 									<Skeleton className="w-full rounded-full " />
 								</Avatar>
 								<div className="place-self-center font-bold">
-									<Skeleton className="w-20 h-5 rounded-xl " />
+									<Skeleton className="h-[20px] w-[80px] rounded-xl " />{" "}
+									{/* Adjusted size */}
 								</div>
 							</div>
 						</div>
@@ -29,7 +28,8 @@ export default function LoadingUserCard() {
 					<hr className="my-3" />
 				</CardHeader>
 				<CardContent>
-					<Skeleton className="w-full h-20 rounded-xl " />
+					<Skeleton className="h-[80px] w-full rounded-xl " />{" "}
+					{/* Adjusted size */}
 				</CardContent>
 			</Card>
 		</div>

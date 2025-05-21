@@ -1,24 +1,24 @@
-import {
-	Card,
-} from "@/components/ui/card";
 import { Activity } from "lucide-react";
+import React from "react"; // Import React for React.memo
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function GeneralActivityData({ chartData }) {
+const GeneralActivityDataComponent = ({ chartData }) => {
+	// Renamed for clarity
 	if (!chartData) {
 		return (
 			<>
-				<Card className="mt-10 grid  auto-rows-auto px-10 sm:min-w-dvh">
+				<Card className="mt-10 grid auto-rows-auto px-10 sm:min-w-dvh">
 					<div>
-						<div className="text-xl font-semibold">
-							<Activity className="inline mr-2" />
+						<div className="font-semibold text-xl">
+							<Activity className="mr-2 inline" />
 							General Data
 						</div>
-						<div className="font-sans text-sm mt-1 text-white/60">
+						<div className="mt-1 font-sans text-sm text-white/60">
 							More insights regarding guild's activity
 						</div>
 					</div>
-					<Skeleton className="w-full h-15" />
+					<Skeleton className="h-15 w-full" />
 				</Card>
 			</>
 		);
@@ -29,13 +29,13 @@ export default function GeneralActivityData({ chartData }) {
 
 	return (
 		<>
-			<Card className="mt-10 grid  auto-rows-auto px-10 sm:min-w-dvh">
+			<Card className="mt-10 grid auto-rows-auto px-10 sm:min-w-dvh">
 				<div>
-					<div className="text-xl font-semibold">
-						<Activity className="inline mr-2" />
+					<div className="font-semibold text-xl">
+						<Activity className="mr-2 inline" />
 						General Data
 					</div>
-					<div className="font-sans text-sm mt-1 text-white/60">
+					<div className="mt-1 font-sans text-sm text-white/60">
 						More insights regarding guild's activity
 					</div>
 				</div>
@@ -43,13 +43,13 @@ export default function GeneralActivityData({ chartData }) {
 					<div className="">
 						<div>
 							Total Members:{" "}
-							<p className="inline text-white/80 font-sans">
+							<p className="inline font-sans text-white/80">
 								{ArrayChartData[0].total}
 							</p>
 						</div>
 						<div>
 							Online Members:{" "}
-							<p className="inline text-white/80 font-sans">
+							<p className="inline font-sans text-white/80">
 								{ArrayChartData[0].online}
 							</p>
 						</div>
@@ -57,13 +57,13 @@ export default function GeneralActivityData({ chartData }) {
 					<div>
 						<div>
 							Idle Members:{" "}
-							<p className="inline text-white/80 font-sans">
+							<p className="inline font-sans text-white/80">
 								{ArrayChartData[0].idle}
 							</p>
 						</div>
 						<div>
 							Offline Members:{" "}
-							<p className="inline text-white/80 font-sans">
+							<p className="inline font-sans text-white/80">
 								{ArrayChartData[0].offline}
 							</p>
 						</div>
@@ -72,4 +72,6 @@ export default function GeneralActivityData({ chartData }) {
 			</Card>
 		</>
 	);
-}
+};
+
+export default React.memo(GeneralActivityDataComponent); // Wrap with React.memo

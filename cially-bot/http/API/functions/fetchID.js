@@ -2,22 +2,21 @@ const { debug } = require("../../../terminal/debug");
 const { error } = require("../../../terminal/error");
 
 async function fetchID(req, res, client) {
-	let success_message = { code: "success" };
-	let error_message = { code: "error" };
-	let body = req.body;
-	let guildID = req.params.guildID;
+	const error_message = { code: "error" }; // success_message was unused
+	const body = req.body;
+	const guildID = req.params.guildID;
 
 	debug({ text: `ID Fetching Request Received for Guild ID: ${guildID}` });
 
 	try {
-		let channels = body[0].channels;
-		let users = body[0].users;
-		let newArray = { newChannels: [], newUsers: [] };
-		let guild = client.guilds.cache.get(`${String(guildID)}`);
+		const channels = body[0].channels;
+		const users = body[0].users;
+		const newArray = { newChannels: [], newUsers: [] };
+		// const guild = client.guilds.cache.get(`${String(guildID)}`); // guild variable was unused
 
-		channels.forEach(async (channel) => {
+		for (const channel of channels) {
 			try {
-				let discordChannel = await client.channels.fetch(channel);
+				const discordChannel = await client.channels.fetch(channel);
 				newArray.newChannels.push({
 					id: channel,
 					name: `${discordChannel.name}`,
@@ -26,29 +25,29 @@ async function fetchID(req, res, client) {
 			} catch (err) {
 				debug({ text: `Failed to add Channel: ${channel}` });
 			}
-		});
+		}
 
-		users.forEach(async (user) => {
+		for (const user of users) {
 			try {
-				let discordUser = client.users.cache.get(user);
+				const discordUser = client.users.cache.get(user);
 				newArray.newUsers.push({ id: user, name: discordUser.username });
 				debug({ text: `Added Succesfully User: ${user}` });
 			} catch (err) {
 				debug({ text: `Failed to add User: ${user}` });
 			}
-		});
+		}
 
-		// I dont know why, but without this debug line things break
-		// Please do not remove :)
-		await debug({ text: `IDs fetched. Ready to send response` });
+		// The previous `await debug` line was not essential for stability with the current for...of loops.
+		// The for...of loops with `await` inside correctly handle async operations.
+		debug({ text: "IDs fetched. Ready to send response" }); // await removed from debug
 
-		await res.send(newArray);
+		res.send(newArray); // await removed from res.send
 	} catch (err) {
 		error({
 			text: `Failed to communicate with the Discord API. /fetchID${guildID}`,
 		});
-		console.log(err);
-		res.send(error_message);
+		console.error(err); // Log full error object
+		res.status(500).json(error_message); // Send 500 on error
 	}
 }
 

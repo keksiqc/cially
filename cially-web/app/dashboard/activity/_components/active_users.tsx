@@ -1,10 +1,6 @@
 "use client";
 import { XAxis } from "recharts";
-import {
-	Bar,
-	BarChart,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, YAxis } from "recharts";
 
 import {
 	Card,
@@ -30,7 +26,10 @@ const chartConfig = {
 	},
 } satisfies ChartConfig;
 
-export default function ActiveUsers({ chartData }) {
+import React from "react"; // Import React for React.memo
+
+const ActiveUsersComponent = ({ chartData }) => {
+	// Renamed for clarity
 	if (!chartData) {
 		return (
 			<>
@@ -40,17 +39,17 @@ export default function ActiveUsers({ chartData }) {
 						<CardDescription>Last 4 weeks</CardDescription>
 					</CardHeader>
 					<CardContent className="pb-0">
-						<Skeleton className="w-full h-30" />
+						<Skeleton className="h-30 w-full" />
 					</CardContent>
 					<CardFooter className="flex items-center justify-center gap-2 text-sm">
-						<Skeleton className="w-20 h-5 rounded-md" />
+						<Skeleton className="h-5 w-20 rounded-md" />
 					</CardFooter>
 				</Card>
 			</>
 		);
 	}
 	return (
-		<Card className="h-full w-full flex flex-col ">
+		<Card className="flex h-full w-full flex-col ">
 			<CardHeader>
 				<CardTitle>Most Active Users (Messages)</CardTitle>
 				<CardDescription>Last 4 weeks</CardDescription>
@@ -97,4 +96,6 @@ export default function ActiveUsers({ chartData }) {
 			</CardFooter>
 		</Card>
 	);
-}
+};
+
+export default React.memo(ActiveUsersComponent); // Wrap with React.memo

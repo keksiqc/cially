@@ -2,20 +2,16 @@ const { debug } = require("../../../terminal/debug");
 const { error } = require("../../../terminal/error");
 
 async function fetchUserData(req, res, client) {
-	const success_message = { code: "success" };
-	const error_message = { code: "error" };
+	const error_message = { code: "error" }; // success_message was unused
 	const body = req.body;
 	const guildID = req.params.guildID;
-	// const userId = "1095304752495083521"; // Used for testing
 	const userId = body[0].userID;
-	// const channeID = "1365959627312857188"; // Used for testing
-	const channelID = body[0].channelID
+	const channelID = body[0].channelID;
 
-	console.log(guildID, userId, channelID)
 	const dataArray = [];
 
 	debug({
-		text: `User Data Fetching Request Received for Guild ID: ${guildID}`,
+		text: `User Data Fetching Request Received for Guild ID: ${guildID}, User ID: ${userId}, Channel ID: ${channelID}`,
 	});
 
 	try {
@@ -33,17 +29,27 @@ async function fetchUserData(req, res, client) {
 
 			dataArray.push({ channel: { id: channelID, name: discordChannel.name } });
 
-			await debug({ text: `User Data fetched. Ready to send response` });
+			debug({ text: "User Data fetched. Ready to send response" }); // await removed
 
-			await res.send(dataArray);
+			res.send(dataArray); // await removed
 		} catch (err) {
-			await debug({ text: `Failed to fetch Channel Name` });
+			error({
+				// Changed to error log
+				text: `Failed to fetch Channel Name for ID: ${channelID}. Error: ${err.message}`,
+			});
+			console.error(err); // Log the full error object
+			// Sending partial data is an option, or send an error.
+			// For now, let's assume partial data is acceptable if user data was fetched.
 			dataArray.push({ channel: { id: channelID, name: channelID } });
-			await res.send(dataArray);
+			res.send(dataArray);
 		}
 	} catch (err) {
-		await debug({ text: `Failed to fetch User Data` });
-		res.send(error_message);
+		error({
+			// Changed to error log
+			text: `Failed to fetch User Data for User ID: ${userId}. Error: ${err.message}`,
+		});
+		console.error(err); // Log the full error object
+		res.status(500).json(error_message); // Send 500 on error
 	}
 }
 

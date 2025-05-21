@@ -12,7 +12,11 @@ interface GuildData {
 	in_db: boolean;
 }
 
-function DashboardClientComponent({ guildID }: { guildID: string | string[] | undefined }) {
+function DashboardClientComponent({
+	guildID,
+}: {
+	guildID: string | string[] | undefined;
+}) {
 	const [guildData, setGuildData] = useState<GuildData | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -43,7 +47,7 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 	}, [guildID]);
 
 	if (loading) {
-		return <div>Loading...</div>
+		return <div>Loading...</div>;
 	}
 
 	if (error) {
@@ -54,11 +58,13 @@ function DashboardClientComponent({ guildID }: { guildID: string | string[] | un
 		return <div>No guild data found.</div>;
 	}
 
-	const date = new Date();
-	const new_date = date.toLocaleString("en-US");
-	const welcome_message = String(new_date).includes("AM")
-		? "Good Morning"
-		: "Good Evening";
+	const currentHour = new Date().getHours();
+	const welcome_message =
+		currentHour < 12
+			? "Good Morning"
+			: currentHour < 18
+				? "Good Afternoon"
+				: "Good Evening";
 
 	return (
 		<>
@@ -98,7 +104,5 @@ export default async function Dashboard({
 }) {
 	const guildID = (await searchParams).guildID;
 
-	return (
-		<DashboardClientComponent guildID={guildID} />
-	);
+	return <DashboardClientComponent guildID={guildID} />;
 }

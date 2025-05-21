@@ -5,8 +5,8 @@ const { debug } = require("../terminal/debug");
 const { error } = require("../terminal/error");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 const { API } = require("../http/API/API");
 
 // Main Event
@@ -28,10 +28,11 @@ module.exports = {
 
 		// Logs
 		debug({ text: `Client Found: ${client.user.tag}` });
-		console.log(
-			`[SUCCESS] `.green +
-				`The Bot is Running! \n\n-----------LOGS------------\n\n`,
-		);
+		// Assuming debug utility can handle a type or is enhanced for success messages
+		debug({
+			text: "The Bot is Running! \n\n-----------LOGS------------\n\n",
+			type: "SUCCESS",
+		});
 
 		// Sync of slash commands
 		syncCommands(client);
@@ -56,7 +57,8 @@ async function syncCommands(client) {
 
 		for (const file of commandFiles) {
 			const filePath = path.join(commandsPath, file);
-			// Clear cache to ensure we get the latest version
+			// Clear cache to ensure we get the latest version - Development only feature for hot-reloading.
+			// For production, consider a more robust command management or restart strategy.
 			delete require.cache[require.resolve(filePath)];
 			const command = require(filePath);
 
@@ -106,6 +108,7 @@ async function syncCommands(client) {
 			});
 		}
 	} catch (err) {
-		error({ text: "Error syncing commands", error: err });
+		error({ text: "Error syncing commands" });
+		console.error(err); // Log the full error object for details
 	}
 }

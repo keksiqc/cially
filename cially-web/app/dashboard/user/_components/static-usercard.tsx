@@ -1,21 +1,19 @@
 "use client";
 
-import {
-	Card,
-	CardContent,
-	CardHeader,
-} from "@/components/ui/card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function StaticUserCard() {
 	return (
-		<div className="place-self-center w-full mt-10 ">
+		<div className="mt-10 w-full place-self-center ">
 			<Card className="mx-5">
 				<CardHeader>
 					<div className="grid grid-cols-2">
 						<div className="place-self-start">
 							<div className="grid grid-cols-2 gap-0">
-								<Avatar className="w-15 h-15">
+								<Avatar className="h-[60px] w-[60px]">
+									{" "}
+									{/* Adjusted size */}
 									<AvatarImage src="https://cdn.discordapp.com/embed/avatars/2.png" />
 								</Avatar>
 								<div className="place-self-center font-bold">Example User</div>
